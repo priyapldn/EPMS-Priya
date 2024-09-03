@@ -17,14 +17,14 @@
                 <label for="email" class="form-label"
                   >Username <span class="text-danger">*</span></label
                 >
-
-                <a href="#" data-toggle="tooltip" title="Enter Username"></a>
-                  <i
-                    class="bi bi-question-circle-fill float-right"
-                    rel="tooltip"
-                    title="Enter your username"
-                    id="username-tooltip"
-                  ></i
+                <a
+                  href="#"
+                  data-toggle="tooltip"
+                  data-placement="right"
+                  title="Enter Username"
+                  class="float-right"
+                >
+                  <i class="bi bi-question-circle-fill float-right bg-dark"></i
                 ></a>
                 <input
                   type="text"
@@ -38,14 +38,15 @@
                 <label for="password" class="form-label"
                   >Password <span class="text-danger">*</span></label
                 >
-                <a href="#" data-toggle="tooltip" title="Enter Password"></a>
-                <i
-                  class="bi bi-question-circle-fill float-right"
-                  rel="tooltip"
-                  title="Enter your password"
-                  id="password-tooltip"
-                ></i
-              ></a>
+                <a
+                  href="#"
+                  data-toggle="tooltip"
+                  data-placement="right"
+                  title="Enter Password"
+                  class="float-right"
+                >
+                  <i class="bi bi-question-circle-fill float-right bg-dark"></i
+                ></a>
                 <input
                   type="password"
                   class="form-control"
@@ -83,9 +84,4 @@
     </div>
   </div>
 </div>
-<script>
-  $(document).ready(function () {
-    $('[data-toggle="tooltip"]').tooltip();
-  });
-</script>
 {% endblock %}
