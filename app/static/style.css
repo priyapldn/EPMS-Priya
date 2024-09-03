@@ -11,3 +11,7 @@ body {
 .content {
   padding: 3rem;
 }
+
+.button-custom {
+  background-color: rgb(220, 176, 216);
+}
