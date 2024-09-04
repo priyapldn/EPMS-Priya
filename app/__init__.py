@@ -9,9 +9,6 @@ def create_app():
     # Load Config class
     app.config.from_object(Config)
 
-    # Check instance folder exists
-    os.makedirs(app.instance_path, exist_ok=True)
-
     # Initialise database
     with app.app_context():
         init_engine(app.config['SQLALCHEMY_DATABASE_URI'])
