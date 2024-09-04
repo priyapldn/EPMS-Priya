@@ -1,6 +1,6 @@
 import os
 from flask import Flask
-from app.database import get_session, engine, init_engine, Base
+from app.database import init_engine
 from config import Config
 
 def create_app():
@@ -17,6 +17,7 @@ def create_app():
         init_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 
     # Initialise engine
+    from app.database import Base, engine
     if engine is None:
         raise RuntimeError("Engine is not initialized")
     Base.metadata.create_all(engine)
