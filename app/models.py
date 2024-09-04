@@ -32,6 +32,7 @@ class Review(Base):
         Enum('Excellent', 'Good', 'Satisfactory', 'Needs Improvement', 'Unsatisfactory'),
         nullable=False
     )
+    goals = Column(String, nullable=False)
 
     def __repr__(self):
         return f'<Review {self.id} - Employee {self.reviewer_id}>'
