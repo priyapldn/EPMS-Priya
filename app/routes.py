@@ -1,19 +1,13 @@
 from flask import render_template, Blueprint
+from flask_login import login_required, current_user
+from app.forms import RegistrationForm, LoginForm
 
 main = Blueprint('main', __name__)
 
-@main.route("/")
-@main.route("/login")
-def login():
-    return render_template('login.html')
-
-@main.route("/register")
-def register():
-    return render_template('register.html')
-
 @main.route("/home")
+@login_required
 def home():
-    return render_template('home.html')
+    return render_template('home.html', name=current_user.name)
 
 @main.route("/create-review")
 def create_review():

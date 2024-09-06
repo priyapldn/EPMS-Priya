@@ -1,18 +1,22 @@
 from datetime import date
 from flask import Flask
+from flask_login import LoginManager
 from app.database import add_employee, add_review, get_session, init_engine
+from app.models import Employee
 from config import Config
 
 class AppFactory:
     def __init__(self):
         self.app = None
         self.session = None
+        self.login_manager = LoginManager()
 
     def create_app(self):
         """Set up and return the Flask app."""
         self.app = Flask(__name__)
         self._configure_app()
         self._init_database()
+        self._login_manager()
         self._populate_database()
 
         # Register app blueprint
@@ -23,6 +27,19 @@ class AppFactory:
     def _configure_app(self):
         """Load configuration for the Flask app."""
         self.app.config.from_object(Config)
+
+    def _login_manager(self):
+
+        self.session = get_session()
+
+        login_manager = LoginManager()
+        login_manager.login_view = 'auth.login'
+        login_manager.init_app(self.app)
+
+        from .models import Employee
+        @login_manager.user_loader
+        def load_user(employee_number):
+            return self.session.query(Employee).get(employee_number)
 
     def _init_database(self):
         """Initialize the database within the Flask app context."""

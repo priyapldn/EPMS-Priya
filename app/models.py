@@ -20,6 +20,9 @@ class Employee(Base, UserMixin):
 
     def __repr__(self):
         return f'<Employee {self.name}>'
+    
+    def get_id(self):
+        return self.employee_number
 
 # Review Table
 class Review(Base):

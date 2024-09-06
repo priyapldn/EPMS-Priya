@@ -1,4 +1,5 @@
-from flask import Blueprint, flash, render_template, redirect, url_for, request, current_app
+from flask import Blueprint, flash, render_template, redirect, url_for, request
+from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import Employee
 from app.database import get_session
@@ -9,6 +10,8 @@ auth = Blueprint('auth', __name__)
 @auth.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
+        if current_user.is_authenticated:
+            return redirect(url_for('main.home'))
         return render_template('login.html')
     
     session = get_session()
@@ -23,6 +26,7 @@ def login():
         flash('Please check your login details and try again.')
         return redirect(url_for('auth.login'))
 
+    login_user(employee_exists, remember=remember)
     return redirect(url_for('main.home'))
 
 @auth.route("/register", methods=['GET', 'POST'])
@@ -56,5 +60,7 @@ def register():
     return redirect(url_for('auth.login'))
 
 @auth.route('/logout')
+@login_required
 def logout():
-    return 'Logout'
+    logout_user()
+    return redirect(url_for('auth.login'))
