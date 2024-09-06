@@ -8,7 +8,7 @@ Base = declarative_base()
 # Employee Table
 class Employee(Base, UserMixin):
     __tablename__ = 'employees'
-    name = Column(String(60), unique=True, nullable=False)
+    name = Column(String(60), nullable=False)
     employee_number = Column(Integer, unique=True, nullable=False, primary_key=True)
     username = Column(String(40), unique=True, nullable=False)
     email = Column(String(120), unique=True, nullable=False)

@@ -1,7 +1,8 @@
 import re
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
+from wtforms import IntegerField, StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, ValidationError
+from app.database import get_session
 from app.models import Employee
 
 class LoginForm(FlaskForm):
@@ -11,14 +12,20 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login')
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=10)])
+    name = StringField('Name')
+    employee_number = IntegerField('Employee Number', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
+    username = StringField('Username', validators=[DataRequired(), Length(min=10)])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Sign Up')
 
+    def __init__(self, session=None, *args, **kwargs):
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+        self.session = get_session()
+
     def validate_username(self, username):
-        user = Employee.query.filter_by(username=username.data).first()
-        if user:
+        employee_exists = self.session.query(Employee).filter_by(username=username.data).first()
+        if employee_exists:
             raise ValidationError('That username is taken. Please choose a different one.')
     
     def validate_password(self, password):
@@ -39,6 +46,6 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Password must contain at least one special character.')
 
     def validate_email(self, email):
-        user = Employee.query.filter_by(email=email.data).first()
-        if user:
+        employee_exists = self.session.query(Employee).filter_by(email=email.data).first()
+        if employee_exists:
             raise ValidationError('There is already an account with this email. Please login.')

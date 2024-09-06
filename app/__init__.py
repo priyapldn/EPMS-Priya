@@ -56,7 +56,7 @@ class AppFactory:
     def _populate_database(self):
         """Populate the database with initial data if the tables are empty."""
         # Add an employee
-        add_employee(self.session, 'John Doe', 101, 'johndoe', 'john.doe@example.com', 'securepassword', is_admin=False)
+        add_employee(self.session, 'John Doe', 101, 'johndoe1234', 'john.doe@example.com', 'Password123!', is_admin=False)
 
         # Add a review for that employee (assuming employee_number 101 exists)
         add_review(self.session, 101, date(2024, 9, 4), 202, 'Excellent', 

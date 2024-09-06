@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, render_template, redirect, url_for, request
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.forms import LoginForm
+from app.forms import LoginForm, RegistrationForm
 from app.models import Employee
 from app.database import get_session
 
@@ -33,33 +33,48 @@ def login():
 
 @auth.route("/register", methods=['GET', 'POST'])
 def register():
-    if request.method == 'GET':
-        return render_template('register.html')
+    form = RegistrationForm()
     
-    session = get_session()
+    if form.validate_on_submit():
+        name = form.name.data
+        employee_number = form.employee_number.data
+        email = form.email.data
+        username = form.username.data
+        password = form.password.data
 
-    name = request.form.get('name')
-    employee_number = request.form.get('employee_number')
-    email = request.form.get('email')
-    username = request.form.get('username')
-    password = request.form.get('password')
+        session = get_session()
 
-    existing_employee = session.query(Employee).filter_by(email=email).first()
+        existing_email = session.query(Employee).filter_by(email=email).first()
+        existing_employee = session.query(Employee).filter_by(employee_number=employee_number).first()
 
-    if existing_employee:
-        flash('Email address already exists.')
-        return redirect(url_for('auth.register'))
+        if existing_email:
+            flash('Email address already exists.', 'danger')
+            return redirect(url_for('auth.register'))
 
-    new_employee = Employee(name=name, employee_number=employee_number,email=email, username=username, password=generate_password_hash(password, method='pbkdf2:sha256'), is_admin=False)
-    
-    session.add(new_employee)
-    try:
-        session.commit()
-    except Exception as e:
-        session.rollback()
-        print(f"Error: {e}")
+        if existing_employee:
+            flash('This employee number already exists. Please log in instead.', 'danger')
+            return redirect(url_for('auth.register'))
 
-    return redirect(url_for('auth.login'))
+        new_employee = Employee(
+            name=name,
+            employee_number=employee_number,
+            email=email,
+            username=username,
+            password=generate_password_hash(password, method='pbkdf2:sha256'),
+            is_admin=False
+        )
+        
+        session.add(new_employee)
+        try:
+            session.commit()
+            flash('Your account has been created! You can now log in.', 'success')
+            return redirect(url_for('auth.login'))
+        except Exception as e:
+            session.rollback()
+            flash(f'An error occurred while creating your account: {str(e)}', 'danger')
+            return redirect(url_for('auth.register'))
+
+    return render_template('register.html', form=form)
 
 @auth.route('/logout')
 @login_required
