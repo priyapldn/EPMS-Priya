@@ -17,57 +17,31 @@ current_user.is_authenticated %}
             {{ messages[0] }}
           </div>
           {% endif %} {% endwith %}
+
           <form method="POST" action="{{ url_for('auth.login') }}">
+            {{ form.hidden_tag() }}
+            <!-- CSRF protection token -->
             <div class="row gy-3 gy-md-4 overflow-hidden">
               <div class="col-12">
                 <label for="email" class="form-label"
                   >Username <span class="text-danger">*</span></label
                 >
-                <a
-                  href="#"
-                  data-toggle="tooltip"
-                  data-placement="right"
-                  title="Enter Username"
-                  class="float-right"
-                >
-                  <i
-                    class="bi bi-question-circle-fill float-right"
-                    style="color: rgb(57, 57, 57)"
-                  ></i
-                ></a>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="username"
-                  id="username"
-                  required
-                />
+                {{ form.username(class="form-control", id="username",
+                placeholder="Enter username") }} {% if form.username.errors %}
+                <div class="text-danger">{{ form.username.errors[0] }}</div>
+                {% endif %}
               </div>
+
               <div class="col-12 mt-2 mb-2">
                 <label for="password" class="form-label"
                   >Password <span class="text-danger">*</span></label
                 >
-                <a
-                  href="#"
-                  data-toggle="tooltip"
-                  data-placement="right"
-                  title="Enter Password"
-                  class="float-right"
-                >
-                  <i
-                    class="bi bi-question-circle-fill float-right"
-                    style="color: rgb(57, 57, 57)"
-                  ></i
-                ></a>
-                <input
-                  type="password"
-                  class="form-control"
-                  name="password"
-                  id="password"
-                  value=""
-                  required
-                />
+                {{ form.password(class="form-control", id="password",
+                placeholder="Enter password") }} {% if form.password.errors %}
+                <div class="text-danger">{{ form.password.errors[0] }}</div>
+                {% endif %}
               </div>
+
               <div class="form-check ml-3 mb-3">
                 <input
                   class="form-check-input"
@@ -75,19 +49,19 @@ current_user.is_authenticated %}
                   name="remember"
                   id="remember"
                 />
-                <label class="form-check-label" for="flexCheckDefault">
-                  Remember Me
-                </label>
+                <label class="form-check-label" for="remember"
+                  >Remember Me</label
+                >
               </div>
+
               <div class="col-12">
                 <div class="d-grid">
-                  <button class="btn btn-lg button-custom mt-2" type="submit">
-                    Log in
-                  </button>
+                  {{ form.submit(class="btn btn-lg button-custom mt-2") }}
                 </div>
               </div>
             </div>
           </form>
+
           <div class="row">
             <div class="col-12">
               <hr class="mt-5 mb-4 border-secondary-subtle" />
@@ -97,8 +71,9 @@ current_user.is_authenticated %}
                 <a
                   href="{{ url_for('auth.register') }}"
                   class="link-secondary text-decoration-none mr-3"
-                  >Create new account</a
                 >
+                  Create new account
+                </a>
               </div>
             </div>
           </div>

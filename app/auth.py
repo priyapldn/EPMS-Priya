@@ -1,6 +1,7 @@
 from flask import Blueprint, flash, render_template, redirect, url_for, request
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from app.forms import LoginForm
 from app.models import Employee
 from app.database import get_session
 
@@ -9,25 +10,26 @@ auth = Blueprint('auth', __name__)
 @auth.route("/")
 @auth.route("/login", methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
-        if current_user.is_authenticated:
+    if current_user.is_authenticated:
+        return redirect(url_for('main.home'))
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        remember = form.remember.data
+
+        session = get_session()
+        employee_exists = session.query(Employee).filter_by(username=username).first()
+
+        if employee_exists and check_password_hash(employee_exists.password, password):
+            login_user(employee_exists, remember=remember)
             return redirect(url_for('main.home'))
-        return render_template('login.html')
+        else:
+            flash('Invalid username or password. Please try again', 'danger')
     
-    session = get_session()
-
-    username = request.form.get('username')
-    password = request.form.get('password')
-    remember = True if request.form.get('remember') else False
-
-    employee_exists = session.query(Employee).filter_by(username=username).first()
-
-    if not employee_exists or not check_password_hash(employee_exists.password, password):
-        flash('Please check your login details and try again.')
-        return redirect(url_for('auth.login'))
-
-    login_user(employee_exists, remember=remember)
-    return redirect(url_for('main.home'))
+    return render_template('login.html', form=form)
 
 @auth.route("/register", methods=['GET', 'POST'])
 def register():
