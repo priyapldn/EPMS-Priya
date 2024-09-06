@@ -11,7 +11,13 @@
               </div>
             </div>
           </div>
-          <form action="#!">
+          {% with messages = get_flashed_messages() %} {% if messages %}
+          <div class="alert alert-danger">
+            {{ messages[0] }}. Please go to
+            <a href="{{ url_for('auth.login') }}">login page</a>.
+          </div>
+          {% endif %} {% endwith %}
+          <form method="POST" action="/register">
             <div class="row gy-3 gy-md-4 overflow-hidden">
               <div class="col-12 pt-2 pb-2">
                 <label for="name" class="form-label"
@@ -38,14 +44,14 @@
                 />
               </div>
               <div class="col-12 pt-2 pb-2">
-                <label for="employee-id" class="form-label"
-                  >Employee ID <span class="text-danger">*</span></label
+                <label for="employee_number" class="form-label"
+                  >Employee Number <span class="text-danger">*</span></label
                 >
                 <a
                   href="#"
                   data-toggle="tooltip"
                   data-placement="right"
-                  title="Please enter your ID number, or use the arrows to select"
+                  title="Please enter your number, or use the arrows to select"
                   class="float-right"
                 >
                   <i
@@ -56,8 +62,8 @@
                 <input
                   type="number"
                   class="form-control"
-                  name="employee-id"
-                  id="employee-id"
+                  name="employee_number"
+                  id="employee_number"
                   required
                 />
               </div>
@@ -151,7 +157,7 @@
                 class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end"
               >
                 <a
-                  href="{{ url_for('main.login') }}"
+                  href="{{ url_for('auth.login') }}"
                   class="link-secondary text-decoration-none mr-3"
                   >Already have an account? Sign in</a
                 >
