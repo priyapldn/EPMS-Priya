@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block content %} {% if not
+current_user.is_authenticated %}
 <div class="bg-light py-3 py-md-5">
   <div class="container">
     <div class="row justify-content-md-center">
@@ -12,12 +13,12 @@
             </div>
           </div>
           {% with messages = get_flashed_messages() %} {% if messages %}
-          <div class="alert alert-danger">
+          <div id="flash-message" class="alert alert-danger">
             {{ messages[0] }}. Please go to
             <a href="{{ url_for('auth.login') }}">login page</a>.
           </div>
           {% endif %} {% endwith %}
-          <form method="POST" action="/register">
+          <form method="POST" action="{{ url_for('auth.register') }}">
             <div class="row gy-3 gy-md-4 overflow-hidden">
               <div class="col-12 pt-2 pb-2">
                 <label for="name" class="form-label"
@@ -169,4 +170,4 @@
     </div>
   </div>
 </div>
-{% endblock %}
+{% endif %} {% endblock %}
