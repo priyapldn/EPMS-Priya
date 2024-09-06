@@ -8,7 +8,22 @@ auth = Blueprint('auth', __name__)
 @auth.route("/")
 @auth.route("/login", methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    if request.method == 'GET':
+        return render_template('login.html')
+    
+    session = get_session()
+
+    username = request.form.get('username')
+    password = request.form.get('password')
+    remember = True if request.form.get('remember') else False
+
+    employee_exists = session.query(Employee).filter_by(username=username).first()
+
+    if not employee_exists or not check_password_hash(employee_exists.password, password):
+        flash('Please check your login details and try again.')
+        return redirect(url_for('auth.login'))
+
+    return redirect(url_for('main.home'))
 
 @auth.route("/register", methods=['GET', 'POST'])
 def register():
