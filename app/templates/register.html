@@ -31,6 +31,14 @@ current_user.is_authenticated %}
                 <label for="name" class="form-label"
                   >Name <span class="text-danger">*</span></label
                 >
+                <a
+                data-toggle="tooltip"
+                data-placement="right"
+                title="Please enter the name to display on your account"
+                class="float-right"
+              >
+                <i class="bi bi-question-circle-fill float-right"></i
+              ></a>
                 {{ form.name(class="form-control", placeholder="Enter your name") }} {% if form.name.errors %}
                 <div class="text-danger">{{ form.name.errors[0] }}</div>
                 {% endif %}
@@ -40,6 +48,14 @@ current_user.is_authenticated %}
                 <label for="employee_number" class="form-label"
                   >Employee Number <span class="text-danger">*</span></label
                 >
+                <a
+                data-toggle="tooltip"
+                data-placement="right"
+                title="Please enter your employee number, or use the arrows to select"
+                class="float-right"
+              >
+                <i class="bi bi-question-circle-fill float-right"></i
+              ></a>
                 {{ form.employee_number(class="form-control", placeholder="Enter your employee number") }} {% if form.employee_number.errors %}
                 <div class="text-danger">
                   {{ form.employee_number.errors[0] }}
@@ -51,6 +67,14 @@ current_user.is_authenticated %}
                 <label for="email" class="form-label"
                   >Email <span class="text-danger">*</span></label
                 >
+                <a
+                data-toggle="tooltip"
+                data-placement="right"
+                title="Please enter your work email"
+                class="float-right"
+              >
+                <i class="bi bi-question-circle-fill float-right"></i
+              ></a>
                 {{ form.email(class="form-control validate",
                 placeholder="name@company.com") }} {% if form.email.errors %}
                 <div class="text-danger">{{ form.email.errors[0] }}</div>
@@ -61,6 +85,14 @@ current_user.is_authenticated %}
                 <label for="username" class="form-label"
                   >Username <span class="text-danger">*</span></label
                 >
+                <a
+                data-toggle="tooltip"
+                data-placement="right"
+                title="Please ensure your username has a minimum of 10 characters"
+                class="float-right"
+              >
+                <i class="bi bi-question-circle-fill float-right"></i
+              ></a>
                 {{ form.username(class="form-control validate", placeholder="Enter your username (min 10 chars)") }} {% if form.username.errors %}
                 <div class="text-danger">{{ form.username.errors[0] }}</div>
                 {% endif %}
@@ -70,6 +102,14 @@ current_user.is_authenticated %}
                 <label for="password" class="form-label"
                   >Password <span class="text-danger">*</span></label
                 >
+                <a
+                data-toggle="tooltip"
+                data-placement="right"
+                title="Please ensure your password contains 8 or more characters, with uppercase/lowercase characters and at least one special character"
+                class="float-right"
+              >
+                <i class="bi bi-question-circle-fill float-right"></i
+              ></a>
                 {{ form.password(class="form-control validate", placeholder="Enter your password") }} 
                 {% if form.password.errors %}
                 <div class="text-danger">{{ form.password.errors[0] }}</div>
