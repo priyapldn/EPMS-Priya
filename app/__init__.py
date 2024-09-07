@@ -2,6 +2,8 @@ from datetime import date
 from flask import Flask
 from flask_login import LoginManager
 from app.database import add_employee, add_review, get_session, init_engine
+from flask_wtf import CSRFProtect
+from werkzeug.security import generate_password_hash
 from app.models import Employee
 from config import Config
 
@@ -9,12 +11,14 @@ class AppFactory:
     def __init__(self):
         self.app = None
         self.session = None
+        self.csrf = CSRFProtect()
         self.login_manager = LoginManager()
 
     def create_app(self):
         """Set up and return the Flask app."""
         self.app = Flask(__name__)
         self._configure_app()
+        self.csrf.init_app(self.app)
         self._init_database()
         self._login_manager()
         self._populate_database()
@@ -55,8 +59,8 @@ class AppFactory:
 
     def _populate_database(self):
         """Populate the database with initial data if the tables are empty."""
-        # Add an employee
-        add_employee(self.session, 'John Doe', 101, 'johndoe1234', 'john.doe@example.com', 'Password123!', is_admin=False)
+        # Add admin
+        add_employee(self.session, 'John Doe', 101, 'johndoe1234', 'john.doe@example.com', password=generate_password_hash("Password123!"), is_admin=True)
 
         # Add a review for that employee (assuming employee_number 101 exists)
         add_review(self.session, 101, date(2024, 9, 4), 202, 'Excellent', 
