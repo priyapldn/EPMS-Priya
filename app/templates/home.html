@@ -5,9 +5,9 @@
   <h4>Welcome, {{ current_user.name }}!</h4>
   <!--Check user rights-->
   {% if current_user.is_admin %}
-    <h5>You have admin privileges</h5>
+    <h6>You have admin privileges</h6>
   {% else %}
-    <h5>You have regular user privileges</h5>
+    <h6>You have regular user privileges</h6>
   {% endif %}
 
   <!--Flash Messages-->
@@ -36,9 +36,9 @@
         <a href="{{ url_for('main.create_review') }}" class="btn button-custom">Add Another Review</a>
       </div>
       
-      <div class="row pt-5 gy-3">
+      <div class="row pt-5">
         {% for review in reviews %}
-          <div class="col-md-6 col-lg-4 pb-3">
+          <div class="col-md-6 col-lg-4 pb-5">
             <div class="card card-custom bg-white border-white border-0">
               <div class="card-custom-img" style="
                 background-image: url(http://res.cloudinary.com/d3/image/upload/c_scale,q_auto:good,w_1110/trianglify-v1-cs85g_cc5d2i.jpg);
