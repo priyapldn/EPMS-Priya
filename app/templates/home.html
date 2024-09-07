@@ -5,7 +5,7 @@
 {% with messages = get_flashed_messages(with_categories=True) %}
 {% if messages %}
   {% for category, message in messages %}
-    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+    <div id="flash-message" class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
       {{ message }}
     </div>
   {% endfor %}
@@ -38,7 +38,10 @@
         </div>
         <div class="card-footer" style="background: inherit; border-color: inherit">
           <button data-bs-toggle="modal" data-bs-target="#view-more-modal-{{ loop.index }}" class="btn button-custom" style="color:black;">View More</button>
-          <button href="#" class="btn btn-outline-dark">Edit</button>
+          <form action="{{ url_for('main.update_review', review_id=review.review_id) }}" method="GET" class="d-inline-block">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> 
+            <button type="submit" class="btn btn-outline-dark">Edit</button>
+          </form>
           {% if current_user.is_admin %}
           <button href="#" data-review-id="{{ review.review_id }}" data-bs-toggle="modal" data-bs-target="#confirm-delete-modal" class="btn btn-outline-danger delete-btn">Delete</button>
           {% else %}

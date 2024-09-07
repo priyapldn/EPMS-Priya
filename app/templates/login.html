@@ -16,7 +16,7 @@ current_user.is_authenticated %}
           {% with messages = get_flashed_messages(with_categories=True) %}
             {% if messages %}
               {% for category, message in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                <div id="flash-message" class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
                   {{ message }}
                 </div>
               {% endfor %}
@@ -24,8 +24,7 @@ current_user.is_authenticated %}
           {% endwith %}
 
           <form method="POST" action="{{ url_for('auth.login') }}">
-            {{ form.hidden_tag() }}
-            <!-- CSRF protection token -->
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> 
             <div class="row gy-3 gy-md-4 overflow-hidden">
               <div class="col-12">
                 <label for="email" class="form-label"
