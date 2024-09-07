@@ -1,11 +1,13 @@
 from datetime import date
 from flask import Flask
 from flask_login import LoginManager
-from app.database import add_employee, add_review, get_session, init_engine
 from flask_wtf import CSRFProtect
 from werkzeug.security import generate_password_hash
+
+from app.database import add_employee, add_review, get_session, init_engine
 from app.models import Employee
 from config import Config
+
 
 class AppFactory:
     def __init__(self):
@@ -23,7 +25,7 @@ class AppFactory:
         self._login_manager()
         self._populate_database()
 
-        # Register app blueprint
+        # Register app blueprints
         self._register_blueprints()
 
         return self.app
@@ -33,15 +35,13 @@ class AppFactory:
         self.app.config.from_object(Config)
 
     def _login_manager(self):
-
+        """Initialize the login manager."""
         self.session = get_session()
 
-        login_manager = LoginManager()
-        login_manager.login_view = 'auth.login'
-        login_manager.init_app(self.app)
+        self.login_manager.login_view = 'auth.login'
+        self.login_manager.init_app(self.app)
 
-        from .models import Employee
-        @login_manager.user_loader
+        @self.login_manager.user_loader
         def load_user(employee_number):
             return self.session.query(Employee).get(employee_number)
 
@@ -49,23 +49,37 @@ class AppFactory:
         """Initialize the database within the Flask app context."""
         with self.app.app_context():
             init_engine(self.app.config['SQLALCHEMY_DATABASE_URI'])
-        
+
         from app.database import Base, engine
         if engine is None:
             raise RuntimeError("Engine is not initialized")
+        
         Base.metadata.create_all(engine)
-
         self.session = get_session()
 
     def _populate_database(self):
         """Populate the database with initial data if the tables are empty."""
         # Add admin
-        add_employee(self.session, 'John Doe', 101, 'johndoe1234', 'john.doe@example.com', password=generate_password_hash("Password123!"), is_admin=True)
+        add_employee(
+            self.session,
+            'John Doe',
+            101,
+            'johndoe1234',
+            'john.doe@example.com',
+            password=generate_password_hash("Password123!"),
+            is_admin=True
+        )
 
         # Add a review for that employee (assuming employee_number 101 exists)
-        add_review(self.session, 101, date(2024, 9, 4), 202, 'Excellent', 
-                   'My main goal is to take part in leadership opportunities in the next term.',
-                   'John has shown great progress in his career goals.')
+        add_review(
+            self.session,
+            101,
+            date(2024, 9, 4),
+            202,
+            'Excellent',
+            'My main goal is to take part in leadership opportunities in the next term.',
+            'John has shown great progress in his career goals.'
+        )
 
     def _register_blueprints(self):
         """Register the app's blueprints."""

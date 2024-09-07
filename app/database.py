@@ -6,21 +6,20 @@ from app.models import Base, Employee, Review
 engine = None
 Session = sessionmaker()
 
-# Initialises engine through creation of tables
 def init_engine(database_uri):
+    """Initialize the database engine and create tables."""
     global engine
     engine = create_engine(database_uri, echo=True)
     Base.metadata.create_all(engine)
 
-# Retrieve session to utilise operations
 def get_session():
+    """Retrieve a session to utilize operations."""
     if engine is None:
         raise RuntimeError("Engine is not initialized")
     return Session(bind=engine)
 
 def add_employee(session, name, employee_number, username, email, password, is_admin=False):
-    """Add a new employee to the database if no employees exist."""
-    # Check if Employee table is empty
+    """Add a new employee to the database if the Employee table is empty."""
     if session.query(Employee).count() == 0:
         new_employee = Employee(
             employee_number=employee_number,
@@ -37,8 +36,7 @@ def add_employee(session, name, employee_number, username, email, password, is_a
         print("Employee table is not empty. No new employee added.")
 
 def add_review(session, employee_number, review_date, reviewer_id, overall_performance_rating, goals, reviewer_comments):
-    """Add a review for an employee if no reviews exist."""
-    # Check if Review table is empty
+    """Add a review for an employee if the Review table is empty."""
     if session.query(Review).count() == 0:
         new_review = Review(
             employee_number=employee_number,

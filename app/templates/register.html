@@ -1,142 +1,145 @@
-{% extends "base.html" %} {% block content %} {% if not
-current_user.is_authenticated %}
-<div class="bg-light py-3 py-md-5">
-  <div class="container">
-    <div class="row justify-content-md-center">
-      <div class="col-12 col-md-11 col-lg-8 col-xl-7 col-xxl-6">
-        <div class="bg-white p-4 p-md-5 rounded shadow-sm">
-          <div class="row">
-            <div class="col-12">
-              <div class="mb-5">
-                <h3>Sign up</h3>
-              </div>
-            </div>
-          </div>
+{% extends "base.html" %}
 
-          {% with messages = get_flashed_messages(with_categories=True) %}
-            {% if messages %}
-              {% for category, message in messages %}
-                <div id="flash-message" class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                  {{ message }}
-                </div>
-              {% endfor %}
-            {% endif %}
-          {% endwith %}
-
-          <form method="POST" action="{{ url_for('auth.register') }}">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> 
-
-            <div class="row gy-3 gy-md-4 overflow-hidden">
-              <div class="col-12 pt-2 pb-2">
-                <label for="name" class="form-label"
-                  >Name <span class="text-danger">*</span></label
-                >
-                <a
-                data-toggle="tooltip"
-                data-placement="right"
-                title="Please enter the name to display on your account"
-                class="float-right"
-              >
-                <i class="bi bi-question-circle-fill float-right"></i
-              ></a>
-                {{ form.name(class="form-control", placeholder="Enter your name") }} {% if form.name.errors %}
-                <div class="text-danger">{{ form.name.errors[0] }}</div>
-                {% endif %}
-              </div>
-
-              <div class="col-12 pt-2 pb-2">
-                <label for="employee_number" class="form-label"
-                  >Employee Number <span class="text-danger">*</span></label
-                >
-                <a
-                data-toggle="tooltip"
-                data-placement="right"
-                title="Please enter your employee number, or use the arrows to select"
-                class="float-right"
-              >
-                <i class="bi bi-question-circle-fill float-right"></i
-              ></a>
-                {{ form.employee_number(class="form-control", placeholder="Enter your employee number") }} {% if form.employee_number.errors %}
-                <div class="text-danger">
-                  {{ form.employee_number.errors[0] }}
-                </div>
-                {% endif %}
-              </div>
-
-              <div class="col-12 pt-2 pb-2">
-                <label for="email" class="form-label"
-                  >Email <span class="text-danger">*</span></label
-                >
-                <a
-                data-toggle="tooltip"
-                data-placement="right"
-                title="Please enter your work email"
-                class="float-right"
-              >
-                <i class="bi bi-question-circle-fill float-right"></i
-              ></a>
-                {{ form.email(class="form-control validate",
-                placeholder="name@company.com") }} {% if form.email.errors %}
-                <div class="text-danger">{{ form.email.errors[0] }}</div>
-                {% endif %}
-              </div>
-
-              <div class="col-12 pt-2 pb-2">
-                <label for="username" class="form-label"
-                  >Username <span class="text-danger">*</span></label
-                >
-                <a
-                data-toggle="tooltip"
-                data-placement="right"
-                title="Please ensure your username has a minimum of 10 characters"
-                class="float-right"
-              >
-                <i class="bi bi-question-circle-fill float-right"></i
-              ></a>
-                {{ form.username(class="form-control validate", placeholder="Enter your username (min 10 chars)") }} {% if form.username.errors %}
-                <div class="text-danger">{{ form.username.errors[0] }}</div>
-                {% endif %}
-              </div>
-
-              <div class="col-12 pt-2 pb-2">
-                <label for="password" class="form-label"
-                  >Password <span class="text-danger">*</span></label
-                >
-                <a
-                data-toggle="tooltip"
-                data-placement="right"
-                title="Please ensure your password contains 8 or more characters, with uppercase/lowercase characters and at least one special character"
-                class="float-right"
-              >
-                <i class="bi bi-question-circle-fill float-right"></i
-              ></a>
-                {{ form.password(class="form-control validate", placeholder="Enter your password") }} 
-                {% if form.password.errors %}
-                <div class="text-danger">{{ form.password.errors[0] }}</div>
-                {% endif %}
-              </div>
-
+{% block content %}
+{% if not current_user.is_authenticated %}
+  <div class="bg-light py-3 py-md-5">
+    <div class="container">
+      <div class="row justify-content-md-center">
+        <div class="col-12 col-md-11 col-lg-8 col-xl-7 col-xxl-6">
+          <div class="bg-white p-4 p-md-5 rounded shadow-sm">
+            <div class="row">
               <div class="col-12">
-                <div class="d-grid">
-                  <button class="btn btn-lg button-custom mt-2" type="submit">
-                    Sign up
-                  </button>
+                <div class="mb-5">
+                  <h3>Sign up</h3>
                 </div>
               </div>
             </div>
-          </form>
 
-          <div class="row">
-            <div class="col-12">
-              <hr class="mt-5 mb-4 border-secondary-subtle" />
-              <div
-                class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end"
-              >
-                <a
-                  href="{{ url_for('auth.login') }}"
-                  class="link-secondary text-decoration-none"
-                  >Already have an account? Log in</a
-                >
+            {% with messages = get_flashed_messages(with_categories=True) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div id="flash-message" class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('auth.register') }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+              <div class="row gy-3 gy-md-4 overflow-hidden">
+                <div class="col-12 pt-2 pb-2">
+                  <label for="name" class="form-label">
+                    Name <span class="text-danger">*</span>
+                  </label>
+                  <a
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title="Please enter the name to display on your account"
+                    class="float-right"
+                  >
+                    <i class="bi bi-question-circle-fill float-right"></i>
+                  </a>
+                  {{ form.name(class="form-control", placeholder="Enter your name") }}
+                  {% if form.name.errors %}
+                    <div class="text-danger">{{ form.name.errors[0] }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="col-12 pt-2 pb-2">
+                  <label for="employee_number" class="form-label">
+                    Employee Number <span class="text-danger">*</span>
+                  </label>
+                  <a
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title="Please enter your employee number, or use the arrows to select"
+                    class="float-right"
+                  >
+                    <i class="bi bi-question-circle-fill float-right"></i>
+                  </a>
+                  {{ form.employee_number(class="form-control", placeholder="Enter your employee number") }}
+                  {% if form.employee_number.errors %}
+                    <div class="text-danger">{{ form.employee_number.errors[0] }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="col-12 pt-2 pb-2">
+                  <label for="email" class="form-label">
+                    Email <span class="text-danger">*</span>
+                  </label>
+                  <a
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title="Please enter your work email"
+                    class="float-right"
+                  >
+                    <i class="bi bi-question-circle-fill float-right"></i>
+                  </a>
+                  {{ form.email(class="form-control validate", placeholder="name@company.com") }}
+                  {% if form.email.errors %}
+                    <div class="text-danger">{{ form.email.errors[0] }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="col-12 pt-2 pb-2">
+                  <label for="username" class="form-label">
+                    Username <span class="text-danger">*</span>
+                  </label>
+                  <a
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title="Please ensure your username has a minimum of 10 characters"
+                    class="float-right"
+                  >
+                    <i class="bi bi-question-circle-fill float-right"></i>
+                  </a>
+                  {{ form.username(class="form-control validate", placeholder="Enter your username (min 10 chars)") }}
+                  {% if form.username.errors %}
+                    <div class="text-danger">{{ form.username.errors[0] }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="col-12 pt-2 pb-2">
+                  <label for="password" class="form-label">
+                    Password <span class="text-danger">*</span>
+                  </label>
+                  <a
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title="Please ensure your password contains 8 or more characters, with uppercase/lowercase characters and at least one special character"
+                    class="float-right"
+                  >
+                    <i class="bi bi-question-circle-fill float-right"></i>
+                  </a>
+                  {{ form.password(class="form-control validate", placeholder="Enter your password") }}
+                  {% if form.password.errors %}
+                    <div class="text-danger">{{ form.password.errors[0] }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="col-12">
+                  <div class="d-grid">
+                    <button class="btn btn-lg button-custom mt-2" type="submit">
+                      Sign up
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <div class="row">
+              <div class="col-12">
+                <hr class="mt-5 mb-4 border-secondary-subtle" />
+                <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end">
+                  <a
+                    href="{{ url_for('auth.login') }}"
+                    class="link-secondary text-decoration-none"
+                  >
+                    Already have an account? Log in
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -144,5 +147,5 @@ current_user.is_authenticated %}
       </div>
     </div>
   </div>
-</div>
-{% endif %} {% endblock %}
+{% endif %}
+{% endblock %}

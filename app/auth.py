@@ -21,20 +21,20 @@ def login():
         remember = form.remember.data
 
         session = get_session()
-        employee_exists = session.query(Employee).filter_by(username=username).first()
+        employee = session.query(Employee).filter_by(username=username).first()
 
-        if employee_exists and check_password_hash(employee_exists.password, password):
-            login_user(employee_exists, remember=remember)
+        if employee and check_password_hash(employee.password, password):
+            login_user(employee, remember=remember)
             return redirect(url_for('main.home'))
         else:
             flash('Invalid username or password. Please try again', 'danger')
-    
+
     return render_template('login.html', form=form)
 
 @auth.route("/register", methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
-    
+
     if form.validate_on_submit():
         name = form.name.data
         employee_number = form.employee_number.data
@@ -63,7 +63,7 @@ def register():
             password=generate_password_hash(password, method='pbkdf2:sha256'),
             is_admin=False
         )
-        
+
         session.add(new_employee)
         try:
             session.commit()
