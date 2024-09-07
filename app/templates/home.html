@@ -2,6 +2,11 @@
 {% block content %} 
 {% if current_user.is_authenticated %}
 <h4>Welcome, {{ current_user.name }}!</h4>
+{% if current_user.is_admin %}
+<h5>You have admin privileges</h5>
+{% else %}
+<h5>You have regular user privileges</h5>
+{% endif %}
 {% with messages = get_flashed_messages(with_categories=True) %}
 {% if messages %}
   {% for category, message in messages %}
@@ -12,7 +17,12 @@
 {% endif %}
 {% endwith %}
 <div class="container">
-
+  {% if current_user.is_admin %}
+  <div class="d-flex justify-content-center gap-2">
+  <a href="{{ url_for('main.home') }}" class="btn button-custom btn-lg mx-2">View My Reviews</a>
+  <a href="{{ url_for('main.home', all_reviews=True) }}" class="btn button-custom btn-lg mx-2">View All Reviews</a>
+  </div>
+  {% endif %}
   {% if reviews %}
   <div class="text-right mb-3">
     <a href="{{ url_for('main.create_review') }}" class="btn button-custom">Add Another Review</a>
@@ -20,7 +30,7 @@
   {% endif %}
 
   {% if reviews %}
-  <div class="row pt-5 m-auto">
+  <div class="row pt-5 gy-3">
     {% for review in reviews %}
     <div class="col-md-6 col-lg-4 pb-3">
       <div class="card card-custom bg-white border-white border-0">
@@ -31,7 +41,10 @@
           <img class="img-fluid" src="../static/performance-logo.png" alt="Avatar" />
         </div>
         <div class="card-body" style="overflow-y: auto">
-          <h4 class="card-title">{{ review.review_date.strftime('%B %d, %Y') }} - Performance Review</h4>
+          <p class="card-title"><h4>{{ review.review_date.strftime('%B %d, %Y') }} - Performance Review</h4>
+          {% if current_user.is_admin %}
+          <h7 class="text-info">Created By: {% if current_user.employee_number == review.employee_number %} You {% else %}{{ review.employee_number }} {% endif %}</h7>
+          {% endif %}</p>
           <div class="card-text-container">
           <p class="card-text">{{ review.goals|safe }}</p>
           </div>
@@ -60,6 +73,9 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="modal-{{ loop.index }}">{{ review.review_date.strftime('%B %d, %Y') }} - Performance Review</h5>
+            {% if current_user.is_admin %}
+            <h6 class="text-info mt-1">Created By: {{ review.employee_number }}</h6>
+            {% endif %}
           </div>
           <div class="modal-body">
             <p><strong>Overall Performance Rating:</strong> {{ review.overall_performance_rating }}</p>
