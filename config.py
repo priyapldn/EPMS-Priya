@@ -12,9 +12,15 @@ class Config:
 
     SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(APP_DIR, 'instance', 'epmstore.db')}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    WTF_CSRF_ENABLED = True
 
     DB_USERNAME = os.getenv('DB_USERNAME', 'epm-user')
     DB_PASSWORD = os.getenv('DB_PASSWORD', 'epmstore-pass-123')
 
     # Need to check this
     SECRET_KEY = os.getenv('SECRET_KEY', 'your_secret_key')
+
+class TestingConfig(Config):
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    TESTING = True
+    WTF_CSRF_ENABLED = False

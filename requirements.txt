@@ -4,3 +4,5 @@ Flask-Login
 flask_wtf
 email_validator
 Flask-Login
+pytest
+pytest-flask
