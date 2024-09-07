@@ -76,8 +76,11 @@ def register():
 
     return render_template('register.html', form=form)
 
-@auth.route('/logout')
+@auth.route('/logout', methods=["POST"])
 @login_required
 def logout():
     logout_user()
+    session = get_session()
+
+    flash('You have been logged out.', 'info')
     return redirect(url_for('auth.login'))
