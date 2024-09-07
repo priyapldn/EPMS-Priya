@@ -1,4 +1,4 @@
-from flask import flash, redirect, render_template, Blueprint, url_for
+from flask import flash, redirect, render_template, Blueprint, request, url_for
 from flask_login import login_required, current_user
 from app.database import get_session
 from app.forms import CreateReviewForm
@@ -51,6 +51,36 @@ def create_review():
             return redirect(url_for('main.create_review'))
 
     return render_template('create_review.html', form=form)
+
+@main.route('/edit-review/<review_id>', methods=["GET", "POST"])
+@login_required
+def update_review(review_id):
+    session = get_session()
+    review = session.query(Review).get(review_id)
+    if request.method =="GET":
+
+        form = CreateReviewForm(obj=review)
+
+        return render_template('edit_review.html', form=form, review=review)
+
+    form = CreateReviewForm()
+
+    if form.validate_on_submit():
+        review.review_date = form.review_date.data
+        review.reviewer_id = form.reviewer_id.data
+        review.overall_performance_rating = form.overall_performance_rating.data
+        review.goals = form.goals.data
+        review.reviewer_comments = form.reviewer_comments.data
+
+        try:
+            session.commit()
+            flash('Review updated successfully.', 'success')
+            return redirect(url_for('main.home'))
+        except Exception as e:
+            session.rollback()
+            flash(f'An error occurred while updating the review: {str(e)}', 'danger')
+
+    return render_template('edit_review.html', form=form, review=review)
 
 @main.route('/delete-review/<review_id>', methods=['POST'])
 @login_required
