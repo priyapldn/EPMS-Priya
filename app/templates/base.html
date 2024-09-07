@@ -21,6 +21,7 @@
     <title>Employee Performance Management System</title>
   </head>
   <body>
+    <!--Navigation-->
     <div class="nav-container">
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="{{ url_for('main.home') }}">
@@ -46,6 +47,7 @@
       </nav>
     </div>
 
+    <!--Confirm Logout Modal-->
     <div class="modal" id="logout-modal" tabindex="-1">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -66,9 +68,11 @@
       </div>
     </div>
 
+    <!--Main Content-->
     <div class="content">{% block content %}{% endblock content %}</div>
 
     <script>
+      // Enable bootstrap tooltips
       $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
       });

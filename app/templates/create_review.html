@@ -14,6 +14,7 @@
             </div>
           </div>
 
+          <!--Flash Messages-->
           {% with messages = get_flashed_messages(with_categories=True) %}
           {% if messages %}
             {% for category, message in messages %}
@@ -24,6 +25,7 @@
           {% endif %}
           {% endwith %}
 
+          <!--Create Review Form-->
           <form method="POST" action="{{ url_for('main.create_review') }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> 
 
@@ -160,6 +162,7 @@
   </div>
 </div>
 
+<!--Confirm Cancel Modal-->
 <div class="modal" id="cancel-modal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
