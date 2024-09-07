@@ -1,7 +1,7 @@
 import re
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length, Email, ValidationError
+from wtforms import DateField, IntegerField, SelectField, StringField, PasswordField, SubmitField, BooleanField, TextAreaField
+from wtforms.validators import DataRequired, Length, Email, ValidationError, NumberRange
 from app.database import get_session
 from app.models import Employee
 
@@ -49,3 +49,32 @@ class RegistrationForm(FlaskForm):
         employee_exists = self.session.query(Employee).filter_by(email=email.data).first()
         if employee_exists:
             raise ValidationError('There is already an account with this email. Please login.')
+        
+class CreateReviewForm(FlaskForm):
+    review_date = DateField(
+        'Date',  
+        validators=[DataRequired()]
+    )
+    reviewer_id= IntegerField(
+        'Reviewer ID', 
+        validators=[DataRequired(), NumberRange(min=1, message='Reviewer ID must be a positive integer')]
+    )
+    overall_performance_rating = SelectField(
+        'Overall Performance Rating', 
+        choices=[
+            ('', 'Select Value'),
+            ('Excellent', 'Excellent'),
+            ('Good', 'Good'),
+            ('Satisfactory', 'Satisfactory'),
+            ('Needs Improvement', 'Needs Improvement'),
+            ('Unsatisfactory', 'Unsatisfactory')
+        ],
+        validators=[DataRequired()])
+    goals = TextAreaField(
+        'Goals', 
+        validators=[DataRequired(), Length(min=10)]
+    )
+    reviewer_comments = TextAreaField(
+        'Reviewer Comments', 
+        validators=[DataRequired(), Length(max=500, message='Comments cannot exceed 500 characters')]
+    )
