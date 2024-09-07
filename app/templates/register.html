@@ -115,7 +115,13 @@
                   >
                     <i class="bi bi-question-circle-fill float-right"></i>
                   </a>
-                  {{ form.password(class="form-control validate", placeholder="Enter your password") }}
+                  <div class="input-group">
+                    {{ form.password(class="form-control", id="password",
+                    placeholder="Enter password") }}
+                    <span class="input-group-text" onclick="togglePassword()">
+                      <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                    </span>
+                  </div>
                   {% if form.password.errors %}
                     <div class="text-danger">{{ form.password.errors[0] }}</div>
                   {% endif %}
