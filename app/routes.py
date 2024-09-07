@@ -11,7 +11,10 @@ main = Blueprint('main', __name__)
 def home():
     session = get_session()
 
-    employee_reviews = session.query(Review).filter_by(employee_number=current_user.employee_number).all()
+    if current_user.is_admin and 'all_reviews' in request.args:
+        employee_reviews = session.query(Review).all()
+    else:
+        employee_reviews = session.query(Review).filter_by(employee_number=current_user.employee_number).all()
 
     return render_template('home.html', reviews=employee_reviews)
 
