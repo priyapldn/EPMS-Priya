@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-light py-3 py-md-5">
+  <div class="container">
+    <div class="row justify-content-md-center">
+      <div class="col-12 col-md-11 col-lg-8 col-xl-7 col-xxl-6">
+        <div class="bg-white p-4 p-md-5 rounded shadow-sm">
+          <div class="row">
+            <div class="col-12">
+              <div class="mb-5">
+                <h3>Create a Performance Review</h3>
+              </div>
+            </div>
+          </div>
+
+          {% with messages = get_flashed_messages(with_categories=True) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+          <form method="POST" action="{{ url_for('main.create_review') }}">
+            {{ form.hidden_tag() }} <!-- CSRF Token -->
+
+            <div class="row gy-3 gy-md-4 overflow-hidden">
+              <div class="col-12 pt-2 pb-2">
+                <label for="{{ form.review_date.id }}" class="form-label">
+                  Date <span class="text-danger">*</span>
+                </label>
+                <a
+                data-toggle="tooltip"
+                data-placement="right"
+                title="Please enter the date of the review"
+                class="float-right"
+              >
+                <i class="bi bi-question-circle-fill float-right"></i
+              ></a>
+                {{ form.review_date(class="form-control", placeholder="dd/mm/yyyy") }}
+                {% if form.review_date.errors %}
+                  <div class="text-danger">
+                    {% for error in form.review_date.errors %}
+                      <p>{{ error }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="col-12 pt-2 pb-2">
+                <label for="{{ form.reviewer_id.id }}" class="form-label">
+                  Reviewer ID <span class="text-danger">*</span>
+                </label>
+                <a
+                data-toggle="tooltip"
+                data-placement="right"
+                title="Please enter the employee number of your reviewer"
+                class="float-right"
+              >
+                <i class="bi bi-question-circle-fill float-right"></i
+              ></a>
+                {{ form.reviewer_id(class="form-control") }}
+                {% if form.reviewer_id.errors %}
+                  <div class="text-danger">
+                    {% for error in form.reviewer_id.errors %}
+                      <p>{{ error }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="col-12 pt-2">
+                <div class="form-group">
+                  <label for="{{ form.overall_performance_rating.id }}">
+                    Overall Performance Rating <span class="text-danger">*</span>
+                  </label>
+                  <a
+                  data-toggle="tooltip"
+                  data-placement="right"
+                  title="Please select the performance rating agreed with your reviewer"
+                  class="float-right"
+                >
+                  <i class="bi bi-question-circle-fill float-right"></i
+                ></a>
+                  {{ form.overall_performance_rating(class="form-control") }}
+                  {% if form.overall_performance_rating.errors %}
+                    <div class="text-danger">
+                      {% for error in form.overall_performance_rating.errors %}
+                        <p>{{ error }}</p>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="col-12 pt-2 pb-2">
+                <label for="{{ form.goals.id }}" class="form-label">
+                  Goals <span class="text-danger">*</span>
+                </label>
+                <a
+                data-toggle="tooltip"
+                data-placement="right"
+                title="Write your goals in this space, what would you like to achieve by the next review?"
+                class="float-right"
+              >
+                <i class="bi bi-question-circle-fill float-right"></i
+              ></a>
+                {{ form.goals(class="form-control", placeholder="Enter your goals/comments for the upcoming period") }}
+                {% if form.goals.errors %}
+                  <div class="text-danger">
+                    {% for error in form.goals.errors %}
+                      <p>{{ error }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="col-12 pt-2 pb-2">
+                <label for="{{ form.reviewer_comments.id }}" class="form-label">
+                  Reviewer Comments <span class="text-danger">*</span>
+                </label>
+                <a
+                data-toggle="tooltip"
+                data-placement="right"
+                title="Write your reviewer comments that was spoken about in your discussions (max 500 chars)"
+                class="float-right"
+              >
+                <i class="bi bi-question-circle-fill float-right"></i
+              ></a>
+                {{ form.reviewer_comments(class="form-control", placeholder="Write your reviewer comments here. Ensure these have been agreed by both parties") }}
+                {% if form.reviewer_comments.errors %}
+                  <div class="text-danger">
+                    {% for error in form.reviewer_comments.errors %}
+                      <p>{{ error }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="row d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end">
+                <div class="col-12">
+                  <button class="btn btn-lg button-custom mt-2 mr-3 ml-3" type="submit">
+                    Submit
+                  </button>
+                  <a class="btn btn-lg button-custom mt-2" style="color: black;" href="{{ url_for('main.home') }}" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                    Cancel
+                  </a>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="cancelModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cancel Confirmation</h5>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you wish to cancel? Any changes will be lost.</p>
+      </div>
+      <div class="modal-footer">
+        <form id="cancel-form" action="{{ url_for('main.home') }}" method="GET">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">              
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, continue editing</button>
+          <button type="submit" class="btn button-custom">Yes, cancel</button>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
