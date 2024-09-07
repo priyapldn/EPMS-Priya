@@ -14,6 +14,7 @@ body {
 
 .button-custom {
   background-color: rgb(220, 176, 216);
+  color: black;
 }
 
 #flash-message {
@@ -22,7 +23,7 @@ body {
 
 .card-custom {
   overflow: hidden;
-  min-height: 450px;
+  height: 500px;
   box-shadow: 0 0 15px rgba(10, 10, 10, 0.3);
 }
 
@@ -63,4 +64,12 @@ body {
   left: 1.25rem;
   width: 100px;
   height: 100px;
+}
+
+.card-text-container {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4; /* Adjust the number of lines as needed */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

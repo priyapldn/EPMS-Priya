@@ -1,4 +1,126 @@
-{% extends "base.html" %} {% block content %} {% if
-current_user.is_authenticated %}
-<h4>Welcome, {{ name }}</h4>
-{% endif %} {% endblock %}
+{% extends "base.html" %} 
+{% block content %} 
+{% if current_user.is_authenticated %}
+<h4>Welcome, {{ current_user.name }}!</h4>
+{% with messages = get_flashed_messages(with_categories=True) %}
+{% if messages %}
+  {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+{% endwith %}
+<div class="container">
+
+  {% if reviews %}
+  <div class="text-right mb-3">
+    <a href="{{ url_for('main.create_review') }}" class="btn button-custom">Add Another Review</a>
+  </div>
+  {% endif %}
+
+  {% if reviews %}
+  <div class="row pt-5 m-auto">
+    {% for review in reviews %}
+    <div class="col-md-6 col-lg-4 pb-3">
+      <div class="card card-custom bg-white border-white border-0">
+        <div class="card-custom-img" style="
+          background-image: url(http://res.cloudinary.com/d3/image/upload/c_scale,q_auto:good,w_1110/trianglify-v1-cs85g_cc5d2i.jpg);
+        "></div>
+        <div class="card-custom-avatar">
+          <img class="img-fluid" src="../static/performance-logo.png" alt="Avatar" />
+        </div>
+        <div class="card-body" style="overflow-y: auto">
+          <h4 class="card-title">{{ review.review_date.strftime('%B %d, %Y') }} - Performance Review</h4>
+          <div class="card-text-container">
+          <p class="card-text">{{ review.goals|safe }}</p>
+          </div>
+        </div>
+        <div class="card-footer" style="background: inherit; border-color: inherit">
+          <button data-bs-toggle="modal" data-bs-target="#view-more-modal-{{ loop.index }}" class="btn button-custom" style="color:black;">View More</button>
+          <button href="#" class="btn btn-outline-dark">Edit</button>
+          {% if current_user.is_admin %}
+          <button href="#" data-review-id="{{ review.review_id }}" data-bs-toggle="modal" data-bs-target="#confirm-delete-modal" class="btn btn-outline-danger delete-btn">Delete</button>
+          {% else %}
+          <button class="btn btn-outline-danger disabled tx"
+          data-toggle="tooltip"
+          data-placement="bottom"
+          title="Only the admin can delete this review"
+          class="float-right">Delete</button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal fade bd-example-modal-lg" id="view-more-modal-{{ loop.index }}" tabindex="-1" role="dialog" aria-labelledby="modal-{{ loop.index }}" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-{{ loop.index }}">{{ review.review_date.strftime('%B %d, %Y') }} - Performance Review</h5>
+          </div>
+          <div class="modal-body">
+            <p><strong>Overall Performance Rating:</strong> {{ review.overall_performance_rating }}</p>
+            <p><strong>Goals: </strong>{{ review.goals|safe }}</p>
+            <p><strong>Reviewer ID: </strong> {{ review.reviewer_id }}</p>
+            <p><strong>Reviewer Comments: </strong> {{ review.reviewer_comments }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn button-custom" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="confirm-delete-modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Delete Confirmation</h5>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to delete this review? This cannot be reverted.</p>
+          </div>
+          <div class="modal-footer">
+            <form id="delete-form" action="{{ url_for('main.delete_review', review_id='') }}" method="POST">
+              <input type="hidden" id="review_id" name="review_id" value="">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">              
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center pt-5">
+    <a href="{{ url_for('main.create_review') }}" class="btn button-custom">Add Your First Review</a>
+  </div>
+  {% endif %}
+</div>
+{% else %}
+<div class="alert alert-warning" role="alert">
+  <strong>Warning:</strong> Please log in to access this page.
+</div>
+{% endif %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    function setDeleteModal(reviewId) {
+      const reviewIdInput = document.getElementById('review_id');
+      reviewIdInput.value = reviewId;
+      const deleteForm = document.getElementById('delete-form');
+      deleteForm.action = `/delete-review/${reviewId}`;
+    }
+
+    document.querySelectorAll('.delete-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        const reviewId = this.getAttribute('data-review-id');
+        setDeleteModal(reviewId);
+      });
+    });
+  });
+  </script>
+  
+{% endblock %}

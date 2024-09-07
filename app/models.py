@@ -28,7 +28,7 @@ class Employee(Base, UserMixin):
 class Review(Base):
     __tablename__ = 'reviews'
     review_id = Column(Integer, primary_key=True)
-    employee_number = Column(Integer, ForeignKey('employees.employee_number'), unique=True, nullable=False)
+    employee_number = Column(Integer, ForeignKey('employees.employee_number'),nullable=False)
     review_date = Column(DateTime, nullable=False)
     reviewer_id= Column(Integer, unique=True, nullable=False)
     overall_performance_rating = Column(
