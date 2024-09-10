@@ -26,7 +26,7 @@
           {% endwith %}
 
           <!--Edit Review Form-->
-          <form method="POST" action="{{ url_for('main.update_review', review_id=review.review_id) }}">
+          <form method="POST" action="{{ url_for('main.update_review', review_id=review.review_id) }}" id="edit-review-form">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> 
 
             <div class="row gy-3 gy-md-4 overflow-hidden">
@@ -145,7 +145,7 @@
 
               <div class="row d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end">
                 <div class="col-12">
-                  <a class="btn btn-lg button-custom mt-2 mr-3 ml-3" href="{{ url_for('main.home') }}" data-bs-toggle="modal" data-bs-target="#save-modal">
+                  <a class="btn btn-lg button-custom mt-2 mr-3 ml-3 save-btn" data-bs-toggle="modal" data-bs-target="#save-modal">
                     Save
                   </a>
                   <a class="btn btn-lg button-custom mt-2" href="{{ url_for('main.home') }}" data-bs-toggle="modal" data-bs-target="#cancel-modal">
@@ -193,15 +193,20 @@
       <div class="modal-body">
         <p>Are you sure you would like to save these changes?</p>
       </div>
-      <div class="modal-footer">
-        <form id="save-form" action="{{ url_for('main.home') }}" method="GET">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />              
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, continue editing</button>
-          <button type="submit" class="btn button-custom">Yes, save</button>
-        </form>
+      <div class="modal-footer">     
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, continue editing</button>
+        <button type="submit" class="btn button-custom" onclick="submitForm()">Yes, save</button>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+
+    function submitForm() {
+        let form = document.getElementById('edit-review-form');
+        form.submit()
+    }
+</script>
 
 {% endblock %}
