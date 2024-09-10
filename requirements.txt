@@ -7,3 +7,4 @@ Flask-Login
 pytest
 pytest-flask
 black
+gunicorn
