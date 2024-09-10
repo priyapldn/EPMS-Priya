@@ -60,7 +60,7 @@
                   {% endif %}
                 </p>
                 <div class="card-text-container">
-                  <p class="card-text">{{ review.goals|safe }}</p>
+                  <p class="card-text"><strong>Goals: </strong>{{ review.goals|safe }}</p>
                 </div>
               </div>
               <!--Card Actions-->
@@ -74,10 +74,6 @@
                 </form>
                 {% if current_user.is_admin %}
                   <button href="#" data-review-id="{{ review.review_id }}" data-bs-toggle="modal" data-bs-target="#confirm-delete-modal" class="btn btn-outline-danger delete-btn">
-                    Delete
-                  </button>
-                {% else %}
-                  <button class="btn btn-outline-danger disabled tx" data-toggle="tooltip" data-placement="bottom" title="Only the admin can delete this review" class="float-right">
                     Delete
                   </button>
                 {% endif %}
