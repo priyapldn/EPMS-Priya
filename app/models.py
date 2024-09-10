@@ -36,7 +36,7 @@ class Review(Base):
         Integer, ForeignKey("employees.employee_number"), nullable=False
     )
     review_date = Column(DateTime, nullable=False)
-    reviewer_id = Column(Integer, unique=True, nullable=False)
+    reviewer_id = Column(Integer, nullable=False)
     overall_performance_rating = Column(
         Enum(
             "Excellent", "Good", "Satisfactory", "Needs Improvement", "Unsatisfactory"
