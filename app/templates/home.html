@@ -3,6 +3,8 @@
 {% block content %}
 {% if current_user.is_authenticated %}
   <h4>Welcome, {{ current_user.name }}!</h4>
+</br>
+  <h5>Employee Number: {{ current_user.employee_number }}</h5>
   <!--Check user rights-->
   {% if current_user.is_admin %}
     <h6>You have admin privileges</h6>
@@ -28,6 +30,7 @@
         <a href="{{ url_for('main.home') }}" class="btn button-custom btn-lg mx-2">View My Reviews</a>
         <a href="{{ url_for('main.home', all_reviews=True) }}" class="btn button-custom btn-lg mx-2">View All Reviews</a>
       </div>
+      <p class="mt-2 text-center">(Scroll to view more)</p>
     {% endif %}
 
     <!--Review Card Grid-->
@@ -88,7 +91,11 @@
                 <div class="modal-header">
                   <h5 class="modal-title" id="modal-{{ loop.index }}">{{ review.review_date.strftime('%B %d, %Y') }} - Performance Review</h5>
                   {% if current_user.is_admin %}
-                    <h6 class="text-info mt-1">Created By: {{ review.employee_number }}</h6>
+                    <h6 class="text-info mt-1">Created By: {% if current_user.employee_number == review.employee_number %} 
+                      You 
+                    {% else %}
+                      {{ review.employee_number }} 
+                    {% endif %}</h6>
                   {% endif %}
                 </div>
                 <div class="modal-body">
