@@ -23,7 +23,7 @@ class LoginForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
-    name = StringField("Name", validators=[DataRequired(), Regexp(r'^[a-zA-Z]+$', message="Name must contain only letters.")])
+    name = StringField("Name", validators=[DataRequired(), Regexp(r'^[a-zA-Z\s\-]+$', message="Name must contain only letters.")])
     employee_number = IntegerField("Employee Number", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])
     username = StringField("Username", validators=[DataRequired(), Length(min=10)])
