@@ -94,3 +94,12 @@ The credentials to log in as admin are:
 
 Once logged in, you can see all the reviews for John, and other employees.
 
+## Testing
+
+To run the tests, ensure you have setup a virtual environment in your IDE. 
+Then simply run:
+
+```bash
+pytest
+```
+
