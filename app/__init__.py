@@ -16,10 +16,10 @@ class AppFactory:
         self.csrf = CSRFProtect()
         self.login_manager = LoginManager()
 
-    def create_app(self):
+    def create_app(self, config=None):
         """Set up and return the Flask app"""
         self.app = Flask(__name__)
-        self._configure_app()
+        self._configure_app(config)
         self.csrf.init_app(self.app)
         self._init_database()
         self._login_manager()
@@ -30,9 +30,12 @@ class AppFactory:
 
         return self.app
 
-    def _configure_app(self):
+    def _configure_app(self, config):
         """Load configuration"""
         self.app.config.from_object(Config)
+
+        if config:
+            self.app.config.update(config)
 
     def _login_manager(self):
         """Initialize the login manager"""
@@ -95,7 +98,7 @@ class AppFactory:
 
 
 # Targeted on flask run
-def create_app():
+def create_app(config=None):
     """Factory function to create the app instance"""
     factory = AppFactory()
-    return factory.create_app()
+    return factory.create_app(config)
