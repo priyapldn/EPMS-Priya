@@ -58,13 +58,14 @@
                   Reviewer ID <span class="text-danger">*</span>
                 </label>
                 <a
-                  data-toggle="tooltip"
-                  data-placement="right"
-                  title="Please enter the employee number of your reviewer"
-                  class="float-right"
+                data-toggle="tooltip"
+                data-placement="right"
+                title="Please enter the employee number of your reviewer"
+                class="float-right d-inline-block"
                 >
-                  <i class="bi bi-question-circle-fill float-right"></i>
-                </a>
+                <i class="bi bi-question-circle-fill float-right"></i>
+              </a>
+              <h6 class="mb-3 font-italic font-weight-light " style="font-size:14px !important">This could be, but is not limited to your Line Manager's ID</h6>
                 {{ form.reviewer_id(class="form-control") }}
                 {% if form.reviewer_id.errors %}
                   <div class="text-danger">
