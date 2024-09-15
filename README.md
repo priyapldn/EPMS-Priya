@@ -28,11 +28,25 @@ git clone git@github.com:priyapldn/EPMS-SEA-Priya.git
 
 ### Dependencies
 
-Next, please ensure you have Python3 and `pip` installed. Then install the dependencies in the `requirements.txt` file:
+Next, please ensure you have Python3 and `pip` installed. Ensure you have a python virtual environment setup in the **root** directory. If not, please follow these steps to do so:
+
+```bash
+# Install virtualenv
+pip install virtualenv
+
+# Create environment
+python3 -m venv .venv
+
+# Activate Environment
+source .venv/bin/activate
+```
+
+Then install the dependencies in the `requirements.txt` file:
 
 ```bash
 pip install -r requirements.txt
 ```
+
 ## Want to run this locally?
 
 Follow these steps to run this project locally, rather than accessing the hosted URL.
@@ -67,7 +81,7 @@ To run this locally, you will need to generate the SECRET_KEY. There is a file i
 
 ```bash
 # Ensure you are in the root directory first, otherwise your terminal will not find this file... e.g. cd EPMS-SEA-Priya
-python generate_secret_key.py
+python3 generate_secret_key.py
 ```
 
 This will print a secret key to your terminal, which you can replace the last line with `SECRET_KEY = os.getenv('SECRET_KEY', 'your_generated_key_goes_here')`.
