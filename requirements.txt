@@ -6,5 +6,6 @@ email_validator
 Flask-Login
 pytest
 pytest-flask
+unittest
 black
 gunicorn
