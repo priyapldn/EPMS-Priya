@@ -7,6 +7,7 @@ from app.database import get_session
 
 auth = Blueprint("auth", __name__)
 
+session = get_session()
 
 @auth.route("/")
 @auth.route("/login", methods=["GET", "POST"])
@@ -23,7 +24,6 @@ def login():
         password = form.password.data
         remember = form.remember.data
 
-        session = get_session()
         employee = session.query(Employee).filter_by(username=username).first()
 
         # Match password hash and redirect if successful
@@ -47,8 +47,6 @@ def register():
         email = form.email.data
         username = form.username.data
         password = form.password.data
-
-        session = get_session()
 
         # Check for exisiting users
         existing_email = session.query(Employee).filter_by(email=email).first()
@@ -94,7 +92,6 @@ def register():
 def logout():
     """Log user out of application"""
     logout_user()
-    session = get_session()
 
     flash("You have been logged out.", "info")
     return redirect(url_for("auth.login"))

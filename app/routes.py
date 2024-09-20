@@ -6,12 +6,13 @@ from app.models import Review
 
 main = Blueprint("main", __name__)
 
+session = get_session()
 
 @main.route("/home")
 @login_required
 def home():
     """Render homepage to present all reviews for a user"""
-    session = get_session()
+    
 
     # Return all reviews for admin
     if current_user.is_admin and "all_reviews" in request.args:
@@ -34,7 +35,6 @@ def create_review():
     if not current_user.is_authenticated:
         return redirect(url_for("auth.login"))
 
-    session = get_session()
     form = CreateReviewForm()
 
     if form.validate_on_submit():
@@ -64,7 +64,6 @@ def create_review():
 @login_required
 def update_review(review_id):
     """Update review of review_id selected"""
-    session = get_session()
     review = session.query(Review).get(review_id)
 
     # Populate form with data of review selected
@@ -97,7 +96,6 @@ def update_review(review_id):
 @login_required
 def delete_review(review_id):
     """Delete review from Review table"""
-    session = get_session()
     review = session.query(Review).get(review_id)
 
     # Ensure that only the admin can delete it
