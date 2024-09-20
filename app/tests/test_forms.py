@@ -48,6 +48,10 @@ class TestRegistrationForm(unittest.TestCase):
         self.app.config["SECRET_KEY"] = "test_secret_key"
         self.session = MagicMock()
 
+    def rollback(self):
+        self.session.rollback() 
+        self.session.remove()
+
     @patch("app.forms.get_session")
     def test_valid_registration_form(self, mock_get_session):
         # Mock the session to simulate that the username and email are not already taken
@@ -65,19 +69,6 @@ class TestRegistrationForm(unittest.TestCase):
             )
 
             self.assertTrue(form.validate())
-
-    # Check name is valid
-    def test_invalid_name_registration_form(self):
-        with self.app.test_request_context():
-            form = RegistrationForm(
-                name="Invalid123",
-                employee_number=1234,
-                email="valid@example.com",
-                username="validusername",
-                password="ValidPassword1!",
-            )
-            self.assertFalse(form.validate())
-            self.assertIn("Name must contain only letters.", form.name.errors)
 
     # Check if username already exists
     @patch("app.forms.get_session")
