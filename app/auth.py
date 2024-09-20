@@ -9,6 +9,7 @@ auth = Blueprint("auth", __name__)
 
 session = get_session()
 
+
 @auth.route("/")
 @auth.route("/login", methods=["GET", "POST"])
 def login():

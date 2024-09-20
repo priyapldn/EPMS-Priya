@@ -9,9 +9,7 @@ from app.models import Base, Employee, Review
 class TestDatabaseInitialization(unittest.TestCase):
 
     @patch("app.database.create_engine")
-    @patch(
-        "app.database.Base.metadata.create_all"
-    )
+    @patch("app.database.Base.metadata.create_all")
     def test_init_engine(self, mock_create_all, mock_create_engine):
         """Test that the engine is initialized and tables are created."""
 
@@ -81,9 +79,7 @@ class TestDatabaseInitialization(unittest.TestCase):
 
         # Verify the correct employee was added
         new_employee = session.add.call_args[0][0]
-        self.assertIsInstance(
-            new_employee, Employee
-        )
+        self.assertIsInstance(new_employee, Employee)
         self.assertEqual(new_employee.name, "John Doe")
         self.assertEqual(new_employee.employee_number, 12345)
         self.assertEqual(new_employee.username, "johndoe1234")
@@ -110,7 +106,7 @@ class TestDatabaseInitialization(unittest.TestCase):
         )
 
         self.assertEqual(session.add.call_count, 1)
-        self.assertEqual(session.commit.call_count, 1) 
+        self.assertEqual(session.commit.call_count, 1)
 
         # Verify the correct review was added
         new_review = session.add.call_args[0][0]

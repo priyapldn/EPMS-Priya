@@ -10,7 +10,14 @@ from wtforms import (
     BooleanField,
     TextAreaField,
 )
-from wtforms.validators import DataRequired, Length, Email, ValidationError, NumberRange, Regexp
+from wtforms.validators import (
+    DataRequired,
+    Length,
+    Email,
+    ValidationError,
+    NumberRange,
+    Regexp,
+)
 from app.database import get_session
 from app.models import Employee
 
@@ -23,7 +30,13 @@ class LoginForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
-    name = StringField("Name", validators=[DataRequired(), Regexp(r'^[a-zA-Z\s\-]+$', message="Name must contain only letters.")])
+    name = StringField(
+        "Name",
+        validators=[
+            DataRequired(),
+            Regexp(r"^[a-zA-Z\s\-]+$", message="Name must contain only letters."),
+        ],
+    )
     employee_number = IntegerField("Employee Number", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])
     username = StringField("Username", validators=[DataRequired(), Length(min=10)])

@@ -8,11 +8,11 @@ main = Blueprint("main", __name__)
 
 session = get_session()
 
+
 @main.route("/home")
 @login_required
 def home():
     """Render homepage to present all reviews for a user"""
-    
 
     # Return all reviews for admin
     if current_user.is_admin and "all_reviews" in request.args:
