@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from app.models import Base, Employee, Review
 
 # Set engine and session for DB
@@ -18,7 +18,8 @@ def get_session():
     """Retrieve a session to utilize operations"""
     if engine is None:
         raise RuntimeError("Engine is not initialized")
-    return Session(bind=engine)
+    Session = scoped_session(sessionmaker(bind=engine))
+    return Session()
 
 
 def add_employee(
