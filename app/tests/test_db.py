@@ -27,19 +27,22 @@ class TestDatabaseInitialization(unittest.TestCase):
 
         self.assertEqual(engine, mock_create_engine.return_value)
 
-    @patch("app.database.Session")
-    def test_get_session_success(self, mock_session):
+    @patch("app.database.scoped_session")
+    @patch("app.database.engine")
+    def test_get_session_success(self, mock_engine, mock_scoped_session):
         """Test that a session is retrieved successfully when engine is initialized."""
 
-        # Mock the engine to be initialized
-        mock_engine = MagicMock()
-        with patch("app.database.engine", new=mock_engine):
-            # Call get_session
-            session_instance = get_session()
+        session_instance = get_session()
 
-            # Check session was created and bound to the mock engine
-            mock_session.assert_called_once_with(bind=mock_engine)
-            self.assertEqual(session_instance, mock_session.return_value)
+        # Check that scoped_session was called (not concerned with exact sessionmaker)
+        self.assertTrue(mock_scoped_session.called)
+
+        # Check that the session instance returned is from the scoped session
+        self.assertEqual(session_instance, mock_scoped_session.return_value())
+
+        # Check that bind is set to the mocked engine
+        mock_sessionmaker = mock_scoped_session.call_args[0][0]
+        self.assertEqual(mock_sessionmaker.kw['bind'], mock_engine)
 
     def test_get_session_no_engine(self):
         """Test that get_session raises a RuntimeError when engine is not initialized."""
