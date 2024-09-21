@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from flask_wtf import CSRFProtect
 from werkzeug.security import generate_password_hash
 
+from app.auth import AuthHandler
 from app.database import add_employee, add_review, get_session, init_engine
 from app.models import Employee
 from config import Config
@@ -15,6 +16,7 @@ class AppFactory:
         self.session = None
         self.csrf = CSRFProtect()
         self.login_manager = LoginManager()
+        self.auth_handler = None
 
     def create_app(self, config=None):
         """Set up and return the Flask app"""
@@ -22,6 +24,7 @@ class AppFactory:
         self._configure_app(config)
         self.csrf.init_app(self.app)
         self._init_database()
+        self._init_auth_handler()
         self._login_manager()
         self._populate_database()
 
@@ -39,8 +42,6 @@ class AppFactory:
 
     def _login_manager(self):
         """Initialize the login manager"""
-        self.session = get_session()
-
         self.login_manager.login_view = "auth.login"
         self.login_manager.init_app(self.app)
 
@@ -61,6 +62,10 @@ class AppFactory:
 
         Base.metadata.create_all(engine)
         self.session = get_session()
+
+    def _init_auth_handler(self):
+        """Initialize the AuthHandler with the session"""
+        self.auth_handler = AuthHandler(self.session)
 
     def _populate_database(self):
         """Populate the database with initial data if the tables are empty"""
@@ -92,9 +97,7 @@ class AppFactory:
 
         self.app.register_blueprint(main_blueprint)
 
-        from app.auth import auth as auth_blueprint
-
-        self.app.register_blueprint(auth_blueprint)
+        self.app.register_blueprint(self.auth_handler.auth_bp)
 
 
 # Targeted on flask run

@@ -5,94 +5,87 @@ from app.forms import LoginForm, RegistrationForm
 from app.models import Employee
 from app.database import get_session
 
-auth = Blueprint("auth", __name__)
+class AuthHandler:
+    def __init__(self, session):
+        self.session = session
+        self.auth_bp = Blueprint("auth", __name__)
 
-session = get_session()
+        # Register routes as methods
+        self.auth_bp.add_url_rule("/", view_func=self.login, methods=["GET", "POST"])
+        self.auth_bp.add_url_rule("/login", view_func=self.login, methods=["GET", "POST"])
+        self.auth_bp.add_url_rule("/register", view_func=self.register, methods=["GET", "POST"])
+        self.auth_bp.add_url_rule("/logout", view_func=self.logout, methods=["POST"])
 
-
-@auth.route("/")
-@auth.route("/login", methods=["GET", "POST"])
-def login():
-    """Log user into application"""
-    # Check if user is already authenticated
-    if current_user.is_authenticated:
-        return redirect(url_for("main.home"))
-
-    form = LoginForm()
-
-    if form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
-        remember = form.remember.data
-
-        employee = session.query(Employee).filter_by(username=username).first()
-
-        # Match password hash and redirect if successful
-        if employee and check_password_hash(employee.password, password):
-            login_user(employee, remember=remember)
+    def login(self):
+        """Log user into application"""
+        if current_user.is_authenticated:
             return redirect(url_for("main.home"))
-        else:
-            flash("Invalid username or password. Please try again", "danger")
 
-    return render_template("login.html", form=form)
+        form = LoginForm()
+        if form.validate_on_submit():
+            username = form.username.data
+            password = form.password.data
+            remember = form.remember.data
 
+            employee = self.session.query(Employee).filter_by(username=username).first()
 
-@auth.route("/register", methods=["GET", "POST"])
-def register():
-    """Add user into application by commiting registration details"""
-    form = RegistrationForm()
+            # Redirect on validate
+            if employee and check_password_hash(employee.password, password):
+                login_user(employee, remember=remember)
+                return redirect(url_for("main.home"))
+            else:
+                flash("Invalid username or password. Please try again", "danger")
 
-    if form.validate_on_submit():
-        name = form.name.data
-        employee_number = form.employee_number.data
-        email = form.email.data
-        username = form.username.data
-        password = form.password.data
+        return render_template("login.html", form=form)
 
-        # Check for exisiting users
-        existing_email = session.query(Employee).filter_by(email=email).first()
-        existing_employee = (
-            session.query(Employee).filter_by(employee_number=employee_number).first()
-        )
+    def register(self):
+        """Register a new user"""
+        form = RegistrationForm()
 
-        if existing_email:
-            flash("Email address already exists.", "danger")
-            return redirect(url_for("auth.register"))
+        if form.validate_on_submit():
+            name = form.name.data
+            employee_number = form.employee_number.data
+            email = form.email.data
+            username = form.username.data
+            password = form.password.data
 
-        if existing_employee:
-            flash(
-                "This employee number already exists. Please log in instead.", "danger"
+            # Check for existing users
+            existing_email = self.session.query(Employee).filter_by(email=email).first()
+            existing_employee = self.session.query(Employee).filter_by(employee_number=employee_number).first()
+
+            if existing_email:
+                flash("Email address already exists.", "danger")
+                return redirect(url_for("auth.register"))
+
+            if existing_employee:
+                flash("This employee number already exists. Please log in instead.", "danger")
+                return redirect(url_for("auth.register"))
+
+            # Create new employee and hash password for security
+            new_employee = Employee(
+                name=name,
+                employee_number=employee_number,
+                email=email,
+                username=username,
+                password=generate_password_hash(password, method="pbkdf2:sha256"),
+                is_admin=False,
             )
-            return redirect(url_for("auth.register"))
 
-        # Create new employee and hash password for security
-        new_employee = Employee(
-            name=name,
-            employee_number=employee_number,
-            email=email,
-            username=username,
-            password=generate_password_hash(password, method="pbkdf2:sha256"),
-            is_admin=False,
-        )
+            self.session.add(new_employee)
+            try:
+                self.session.commit()
+                flash("Your account has been created! You can now log in.", "success")
+                return redirect(url_for("auth.login"))
+            except Exception as e:
+                self.session.rollback()
+                flash(f"An error occurred while creating your account: {str(e)}", "danger")
+                return redirect(url_for("auth.register"))
 
-        session.add(new_employee)
-        try:
-            session.commit()
-            flash("Your account has been created! You can now log in.", "success")
-            return redirect(url_for("auth.login"))
-        except Exception as e:
-            session.rollback()
-            flash(f"An error occurred while creating your account: {str(e)}", "danger")
-            return redirect(url_for("auth.register"))
+        return render_template("register.html", form=form)
 
-    return render_template("register.html", form=form)
-
-
-@auth.route("/logout", methods=["POST"])
-@login_required
-def logout():
-    """Log user out of application"""
-    logout_user()
-
-    flash("You have been logged out.", "info")
-    return redirect(url_for("auth.login"))
+    @login_required
+    def logout(self):
+        """Log user out of application"""
+        logout_user()
+        flash("You have been logged out.", "info")
+        return redirect(url_for("auth.login"))
