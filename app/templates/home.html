@@ -149,6 +149,7 @@
 
 <!--Finding Review ID for card deletion-->
 <script>
+  // Send card to delete to delete-review route
   document.addEventListener('DOMContentLoaded', function() {
     function setDeleteModal(reviewId) {
       const reviewIdInput = document.getElementById('review_id');
@@ -157,6 +158,7 @@
       deleteForm.action = `/delete-review/${reviewId}`;
     }
 
+    // Get specific review id of card to be deleted
     document.querySelectorAll('.delete-btn').forEach(button => {
       button.addEventListener('click', function() {
         const reviewId = this.getAttribute('data-review-id');
