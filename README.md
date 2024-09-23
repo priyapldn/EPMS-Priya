@@ -1,7 +1,7 @@
 # Employee Performance Management System
 
 A Python web application to log in and manage employee performance reviews. This application uses Flask, SQLite, SQLAlchemy and Bootstrap.
-When running this application, you will have the ability to log in as a general or admin user. Once logged in, you can choose to add, read or update a performance review. Admin users (please note these are NOT Reviewers, they are HR Administrators) are given the additional ability to delete any obselete performance reviews.
+When running this application, you will have the ability to log in as a general or admin user. Once logged in, you can choose to add, read or update a performance review. Admin users (please note these are NOT Reviewers, they are HR Administrators) are given the additional ability to delete any obselete performance reviews. Please see the bottom of this README for admin login details.
 
 This application has been built and deployed on Render, with the hosted link as follows: https://epms-sea-priya.onrender.com
 
