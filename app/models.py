@@ -32,6 +32,8 @@ class Review(Base):
     __tablename__ = "reviews"
 
     review_id = Column(Integer, primary_key=True)
+
+    # Link employee number as foreign key
     employee_number = Column(
         Integer, ForeignKey("employees.employee_number"), nullable=False
     )

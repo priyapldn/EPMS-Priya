@@ -7,6 +7,8 @@ from app.models import Employee
 class AuthHandler:
     def __init__(self, session):
         self.session = session
+
+        # Create blueprint
         self.auth_bp = Blueprint("auth", __name__)
 
         # Register routes as methods
@@ -17,6 +19,7 @@ class AuthHandler:
 
     def login(self):
         """Log user into application"""
+        # Redirect to home page if already authenticated
         if current_user.is_authenticated:
             return redirect(url_for("main.home"))
 
@@ -41,6 +44,7 @@ class AuthHandler:
         """Register a new user"""
         form = RegistrationForm()
 
+        # Parse form data from HTML form
         if form.validate_on_submit():
             name = form.name.data
             employee_number = form.employee_number.data
@@ -70,6 +74,7 @@ class AuthHandler:
                 is_admin=False,
             )
 
+            # Add employee details to database
             self.session.add(new_employee)
             try:
                 self.session.commit()

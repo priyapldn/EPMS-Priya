@@ -23,6 +23,7 @@ from app.models import Employee
 
 
 class LoginForm(FlaskForm):
+    """Login validation form"""
     username = StringField("Username", validators=[DataRequired(), Length(min=10)])
     password = PasswordField("Password", validators=[DataRequired(), Length(min=8)])
     remember = BooleanField("Remember Me")
@@ -30,6 +31,7 @@ class LoginForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
+    """Registration validation form"""
     name = StringField(
         "Name",
         validators=[
@@ -89,6 +91,7 @@ class RegistrationForm(FlaskForm):
 
 
 class CreateReviewForm(FlaskForm):
+    """Create Review validation form"""
     review_date = DateField("Date", validators=[DataRequired()])
     reviewer_id = IntegerField(
         "Reviewer ID",

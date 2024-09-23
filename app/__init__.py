@@ -21,6 +21,8 @@ class AppFactory:
     def create_app(self, config=None):
         """Set up and return the Flask app"""
         self.app = Flask(__name__)
+
+        # Call all functions of AppFactory
         self._configure_app(config)
         self.csrf.init_app(self.app)
         self._init_database()
@@ -45,6 +47,7 @@ class AppFactory:
         self.login_manager.login_view = "auth.login"
         self.login_manager.init_app(self.app)
 
+        # Retrieve current user
         @self.login_manager.user_loader
         def load_user(employee_number):
             return self.session.query(Employee).get(employee_number)

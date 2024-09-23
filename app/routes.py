@@ -4,6 +4,7 @@ from app.database import get_session
 from app.forms import CreateReviewForm
 from app.models import Review
 
+# Create blueprint
 main = Blueprint("main", __name__)
 session = get_session()
 
