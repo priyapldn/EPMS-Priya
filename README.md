@@ -10,6 +10,18 @@ To log in as admin, the credentials are at the bottom of this README.
 Uptime Robot has been used to keep this site running, and is monitored regularly.
 Please visit https://uptimerobot.com/ for more information.
 
+## Badges
+
+The following badges review the workflows that are present in GitHub Actions:
+
+### Test and Linting Pipeline
+
+[![Test & Linting](https://github.com/priyapldn/EPMS-Priya/actions/workflows/ci-cd-test.yaml/badge.svg)](https://github.com/priyapldn/EPMS-Priya/actions/workflows/ci-cd-test.yaml)
+
+### Deploy Application Pipeline
+
+[![Deploy Application](https://github.com/priyapldn/EPMS-Priya/actions/workflows/ci-cd-deploy.yaml/badge.svg)](https://github.com/priyapldn/EPMS-Priya/actions/workflows/ci-cd-deploy.yaml)
+
 ## Setup Instructions
 
 ### Clone the repository
@@ -116,4 +128,3 @@ Then simply run:
 ```bash
 pytest
 ```
-
