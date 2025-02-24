@@ -18,5 +18,5 @@ class Config:
 
     # Use the environment variable for SECRET_KEY, fallback to None if not set
     SECRET_KEY = os.getenv(
-        "SECRET_KEY", "68a3ec3f58d32ed69cddd844eb5c0a0870c9cdce9d1f48335a2df7abe814d433"
+        "SECRET_KEY"
     )
