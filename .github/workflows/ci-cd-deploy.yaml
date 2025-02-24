@@ -5,6 +5,8 @@ on:
     workflows: ["Test & Linting"]
     types:
       - completed
+    branches:
+      - '**'
 
 permissions:
   contents: read
