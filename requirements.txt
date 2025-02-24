@@ -7,3 +7,4 @@ flask_wtf
 gunicorn
 pytest
 pytest-flask
+Flask_talisman
