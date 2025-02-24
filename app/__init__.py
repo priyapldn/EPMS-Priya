@@ -24,7 +24,7 @@ class AppFactory:
         self.app = Flask(__name__)
 
         # Call all functions of AppFactory
-        self._set_security_headers()
+        # self._set_security_headers()
         self._configure_app(config)
         self.csrf.init_app(self.app)
         self._init_database()
@@ -37,18 +37,18 @@ class AppFactory:
 
         return self.app
     
-    def _set_security_headers(self):
-        """Set security headers including Content Security Policy"""
-        Talisman(self.app, content_security_policy={
-            'default-src': "'self'",
-            'script-src': "'self' 'unsafe-inline' https://trusted.cdn.com",
-            'style-src': "'self' 'unsafe-inline' https://trusted.styles.com",
-            'img-src': "'self' data:",
-            'object-src': "'none'",
-            'frame-ancestors': "'none'",
-            'base-uri': "'self'",
-            'form-action': "'self'"
-        })
+    # def _set_security_headers(self):
+    #     """Set security headers including Content Security Policy"""
+    #     Talisman(self.app, content_security_policy={
+    #         'default-src': "'self'",
+    #         'script-src': "'self' 'unsafe-inline' https://trusted.cdn.com",
+    #         'style-src': "'self' 'unsafe-inline' https://trusted.styles.com",
+    #         'img-src': "'self' data:",
+    #         'object-src': "'none'",
+    #         'frame-ancestors': "'none'",
+    #         'base-uri': "'self'",
+    #         'form-action': "'self'"
+    #     })
 
     def _configure_app(self, config):
         """Load configuration"""
