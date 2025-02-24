@@ -57,6 +57,9 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.9", "3.10"]  # Test on multiple Python versions
+    
+    env:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }} 
 
     steps:
       - name: Checkout Repository
