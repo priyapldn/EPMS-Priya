@@ -3,12 +3,26 @@
 A Python web application to log in and manage employee performance reviews. This application uses Flask, SQLite, SQLAlchemy and Bootstrap.
 When running this application, you will have the ability to log in as a general or admin user. Once logged in, you can choose to add, read or update a performance review. Admin users (please note these are NOT Reviewers, they are HR Administrators) are given the additional ability to delete any obselete performance reviews. Please see the bottom of this README for admin login details.
 
-This application has been built and deployed on Render, with the hosted link as follows: https://epms-sea-priya.onrender.com
+This application has been built and deployed on Render, with the hosted links as follows: 
+
+- Development: https://epms-sedo-dev.onrender.com
+- Staging: https://epms-sedo-staging.onrender.com
+- Production: https://epms-sedo-prod.onrender.com
 
 To log in as admin, the credentials are at the bottom of this README.
 
 Uptime Robot has been used to keep this site running, and is monitored regularly.
 Please visit https://uptimerobot.com/ for more information.
+
+The following badges review the workflows that are present in GitHub Actions:
+
+### Test and Linting Pipeline
+
+[![Test & Linting](https://github.com/priyapldn/EPMS-Priya/actions/workflows/ci-cd-test.yaml/badge.svg)](https://github.com/priyapldn/EPMS-Priya/actions/workflows/ci-cd-test.yaml)
+
+### Deploy Application Pipeline
+
+[![Deploy Application](https://github.com/priyapldn/EPMS-Priya/actions/workflows/ci-cd-deploy.yaml/badge.svg)](https://github.com/priyapldn/EPMS-Priya/actions/workflows/ci-cd-deploy.yaml)
 
 ## Setup Instructions
 
@@ -116,4 +130,3 @@ Then simply run:
 ```bash
 pytest
 ```
-
