@@ -36,14 +36,14 @@ jobs:
       - name: Deploy to Render (Dev)
         if: github.ref == 'refs/heads/dev'
         run: |
-          curl -X POST "https://api.render.com/deploy/srv-cuu79md6l47c73acq180?key=${{ secrets.RENDER_API_KEY }}"
+          curl -X POST "https://api.render.com/deploy/srv-cuubipdumphs73c9l5v0?key=${{ secrets.RENDER_API_KEY }}"
 
       - name: Deploy to Render (Staging)
         if: github.ref == 'refs/heads/staging'
         run: |
-          curl -X POST "https://api.render.com/deploy/srv-cuu7a3a3esus73eghor0?key=${{ secrets.RENDER_API_KEY }}"
+          curl -X POST "https://api.render.com/deploy/srv-cuubk6hopnds739vsbb0?key=${{ secrets.RENDER_API_KEY }}"
 
       - name: Deploy to Render (Prod)
         if: github.ref == 'refs/heads/main'
         run: |
-          curl -X POST "https://api.render.com/deploy/srv-cuu7agi3esus73eghtdg?key=${{ secrets.RENDER_API_KEY }}"
+          curl -X POST "https://api.render.com/deploy/srv-cuubkel6l47c73aej9n0?key=${{ secrets.RENDER_API_KEY }}"
