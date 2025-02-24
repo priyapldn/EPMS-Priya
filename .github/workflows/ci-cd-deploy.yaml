@@ -6,7 +6,9 @@ on:
     types:
       - completed
     branches:
-      - '**'
+      - dev
+      - staging
+      - main
 
 permissions:
   contents: read
