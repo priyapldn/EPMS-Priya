@@ -1,3 +1,4 @@
+from urllib.parse import urljoin, urlparse
 from flask import Blueprint, flash, render_template, redirect, url_for, request
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -90,6 +91,18 @@ class AuthHandler:
     @login_required
     def logout(self):
         """Log user out of application"""
+        # Validate 'next' parameter to avoid open redirects
+        next_url = request.args.get('next')
+        if next_url:
+            # Ensure 'next' is a valid, relative URL
+            parsed_url = urlparse(next_url)
+            if parsed_url.netloc == '' and parsed_url.path.startswith('/'):
+                # Safe relative redirect
+                next_url = urljoin(request.host_url, next_url)
+            else:
+                # Default to login page if invalid URL
+                next_url = url_for("auth.login")
+
         logout_user()
         flash("You have been logged out.", "info")
-        return redirect(url_for("auth.login"))
+        return redirect(next_url or url_for("auth.login"))

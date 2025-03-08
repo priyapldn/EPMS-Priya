@@ -14,17 +14,28 @@ class ReviewHandler:
     @main.route("/home")
     @login_required
     def home():
-        """Render homepage to present all reviews for a user"""
+        """Render homepage to present all reviews for a user with sorting"""
+        # Default sort is newest
+        sort_order = request.args.get("sort", "newest")
+
         # Check if user is admin before displaying all reviews
         if current_user.is_admin and "all_reviews" in request.args:
-            employee_reviews = session.query(Review).all()
+            employee_reviews = session.query(Review)
         else:
             # Return employee-specific reviews for regular users
-            employee_reviews = (
-                session.query(Review)
-                .filter_by(employee_number=current_user.employee_number)
-                .all()
+            employee_reviews = session.query(Review).filter_by(
+                employee_number=current_user.employee_number
             )
+
+        # Apply sorting based on user selection
+        if sort_order == "oldest":
+            employee_reviews = employee_reviews.order_by(Review.review_date.asc())
+        else:
+            employee_reviews = employee_reviews.order_by(Review.review_date.desc())
+
+        # Execute the query and get all reviews
+        employee_reviews = employee_reviews.all()
+
         return render_template("home.html", reviews=employee_reviews)
 
     @staticmethod
