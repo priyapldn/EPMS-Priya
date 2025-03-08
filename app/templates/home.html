@@ -56,109 +56,107 @@
         </form>
       </div>
     </div>
-    
-    
 
-      <div class="row pt-5">
-        {% for review in reviews %}
-          <div class="col-md-6 col-lg-4 pb-5">
-            <div class="card card-custom bg-white border-white border-0">
-              <div class="card-custom-img" style="
-                background-image: url(http://res.cloudinary.com/d3/image/upload/c_scale,q_auto:good,w_1110/trianglify-v1-cs85g_cc5d2i.jpg);
-              "></div>
-              <div class="card-custom-avatar">
-                <img class="img-fluid" src="../static/performance-logo.png" alt="Avatar" />
-              </div>
-              <div class="card-body" style="overflow-y: auto">
-                <p class="card-title">
-                  <h4>{{ review.review_date.strftime('%B %d, %Y') }} - Performance Review</h4>
-                  {% if current_user.is_admin %}
-                    <h7 class="text-info">
-                      Created By: {% if current_user.employee_number == review.employee_number %} 
-                        You 
-                      {% else %}
-                        {{ review.employee_number }} 
-                      {% endif %}
-                    </h7>
-                  {% endif %}
-                </p>
-                <div class="card-text-container">
-                  <p class="card-text"><strong>Goals: </strong>{{ review.goals|safe }}</p>
-                </div>
-              </div>
-              <!--Card Actions-->
-              <div class="card-footer" style="background: inherit; border-color: inherit">
-                <button data-bs-toggle="modal" data-bs-target="#view-more-modal-{{ loop.index }}" class="btn button-custom" style="color:black;">
-                  View More
-                </button>
-                <form action="{{ url_for('main.update_review', review_id=review.review_id) }}" method="GET" class="d-inline-block">
-                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" /> 
-                  <button type="submit" class="btn btn-outline-dark">
-                    <span class="mdi mdi-pencil me-2"></span>
-                    Edit
-                  </button>
-                </form>
-                {% if current_user.is_admin %}
-                  <button href="#" data-review-id="{{ review.review_id }}" data-bs-toggle="modal" data-bs-target="#confirm-delete-modal" class="btn btn-outline-danger delete-btn">
-                    <span class="mdi mdi-delete me-2"></span>
-                    Delete
-                  </button>
-                {% endif %}
-              </div>
+    <div class="row pt-5">
+      {% for review in reviews %}
+        <div class="col-md-6 col-lg-4 pb-5">
+          <div class="card card-custom bg-white border-white border-0">
+            <div class="card-custom-img" style="
+              background-image: url(http://res.cloudinary.com/d3/image/upload/c_scale,q_auto:good,w_1110/trianglify-v1-cs85g_cc5d2i.jpg);
+            "></div>
+            <div class="card-custom-avatar">
+              <img class="img-fluid" src="../static/performance-logo.png" alt="Avatar" />
             </div>
-          </div>
-
-          <!-- View More Modal -->
-          <div class="modal fade bd-example-modal-lg" id="view-more-modal-{{ loop.index }}" tabindex="-1" role="dialog" aria-labelledby="modal-{{ loop.index }}" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="modal-{{ loop.index }}">{{ review.review_date.strftime('%B %d, %Y') }} - Performance Review</h5>
-                  {% if current_user.is_admin %}
-                    <h6 class="text-info mt-1">Created By: {% if current_user.employee_number == review.employee_number %} 
+            <div class="card-body" style="overflow-y: auto">
+              <p class="card-title">
+                <h4>{{ review.review_date.strftime('%B %d, %Y') }} - Performance Review</h4>
+                {% if current_user.is_admin %}
+                  <h7 class="text-info">
+                    Created By: {% if current_user.employee_number == review.employee_number %} 
                       You 
                     {% else %}
                       {{ review.employee_number }} 
-                    {% endif %}</h6>
-                  {% endif %}
-                </div>
-                <div class="modal-body">
-                  <p><strong>Overall Performance Rating:</strong> {{ review.overall_performance_rating }}</p>
-                  <p><strong>Goals: </strong>{{ review.goals|safe }}</p>
-                  <p><strong>Reviewer ID: </strong> {{ review.reviewer_id }}</p>
-                  <p><strong>Reviewer Comments: </strong> {{ review.reviewer_comments }}</p>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn button-custom" data-bs-dismiss="modal">Close</button>
-                </div>
+                    {% endif %}
+                  </h7>
+                {% endif %}
+              </p>
+              <div class="card-text-container">
+                <p class="card-text"><strong>Goals: </strong>{{ review.goals|safe }}</p>
+              </div>
+            </div>
+            <!--Card Actions-->
+            <div class="card-footer" style="background: inherit; border-color: inherit">
+              <button data-bs-toggle="modal" data-bs-target="#view-more-modal-{{ loop.index }}" class="btn button-custom" style="color:black;">
+                View More
+              </button>
+              <form action="{{ url_for('main.update_review', review_id=review.review_id) }}" method="GET" class="d-inline-block">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" /> 
+                <button type="submit" class="btn btn-outline-dark">
+                  <span class="mdi mdi-pencil me-2"></span>
+                  Edit
+                </button>
+              </form>
+              {% if current_user.is_admin %}
+                <button href="#" data-review-id="{{ review.review_id }}" data-bs-toggle="modal" data-bs-target="#confirm-delete-modal" class="btn btn-outline-danger delete-btn">
+                  <span class="mdi mdi-delete me-2"></span>
+                  Delete
+                </button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- View More Modal -->
+        <div class="modal fade bd-example-modal-lg" id="view-more-modal-{{ loop.index }}" tabindex="-1" role="dialog" aria-labelledby="modal-{{ loop.index }}" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="modal-{{ loop.index }}">{{ review.review_date.strftime('%B %d, %Y') }} - Performance Review</h5>
+                {% if current_user.is_admin %}
+                  <h6 class="text-info mt-1">Created By: {% if current_user.employee_number == review.employee_number %} 
+                    You 
+                  {% else %}
+                    {{ review.employee_number }} 
+                  {% endif %}</h6>
+                {% endif %}
+              </div>
+              <div class="modal-body">
+                <p><strong>Overall Performance Rating:</strong> {{ review.overall_performance_rating }}</p>
+                <p><strong>Goals: </strong>{{ review.goals|safe }}</p>
+                <p><strong>Reviewer ID: </strong> {{ review.reviewer_id }}</p>
+                <p><strong>Reviewer Comments: </strong> {{ review.reviewer_comments }}</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn button-custom" data-bs-dismiss="modal">Close</button>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Confirm Delete Modal -->
-          <div class="modal" id="confirm-delete-modal" tabindex="-1">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Delete Confirmation</h5>
-                </div>
-                <div class="modal-body">
-                  <p>Are you sure you want to delete this review? This cannot be reverted.</p>
-                </div>
-                <div class="modal-footer">
-                  <form id="delete-form" action="{{ url_for('main.delete_review', review_id='') }}" method="POST">
-                    <input type="hidden" id="review_id" name="review_id" value="" />
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />              
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger"><span class="mdi mdi-delete me-2 mr-2"></span>Delete</button>
-                  </form>
-                </div>
+        <!-- Confirm Delete Modal -->
+        <div class="modal" id="confirm-delete-modal" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Delete Confirmation</h5>
+              </div>
+              <div class="modal-body">
+                <p>Are you sure you want to delete this review? This cannot be reverted.</p>
+              </div>
+              <div class="modal-footer">
+                <form id="delete-form" action="{{ url_for('main.delete_review', review_id='') }}" method="POST">
+                  <input type="hidden" id="review_id" name="review_id" value="" />
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />              
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-danger"><span class="mdi mdi-delete me-2 mr-2"></span>Delete</button>
+                </form>
               </div>
             </div>
           </div>
+        </div>
 
-        {% endfor %}
-      </div>
+      {% endfor %}
+    </div>
     {% else %}
       <div class="text-center pt-5">
         <a href="{{ url_for('main.create_review') }}" class="btn button-custom">Add Your First Review</a>
