@@ -7,7 +7,7 @@ from app import create_app
 from app.database import get_session
 from app.forms import LoginForm
 from app.models import Employee
-from app.tests.test_main import User
+from app.tests.unit.test_main import User
 
 
 class AuthTestCase(unittest.TestCase):
