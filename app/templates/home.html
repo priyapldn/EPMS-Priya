@@ -35,10 +35,30 @@
 
     <!--Review Card Grid-->
     {% if reviews %}
-      <div class="text-right mb-3">
+    <div class="d-flex gap-3 align-items-center">  
+      <!-- Add Another Review Button -->
+      <div class="mb-3 mr-3">
         <a href="{{ url_for('main.create_review') }}" class="btn button-custom">Add Another Review</a>
       </div>
-      
+    
+      <!-- Sort Box -->
+      <div class="mb-3">
+        <form method="GET" action="{{ url_for('main.home') }}" class="form-custom">
+          <div class="d-flex align-items-center">
+            <!-- Sort Icon -->
+            <span class="mdi mdi-sort-ascending me-2 ml-2"></span>
+            <!-- Select for Sorting -->
+            <select name="sort" class="form-select w-auto" onchange="this.form.submit()">
+              <option value="newest" {% if request.args.get('sort') == 'newest' %}selected{% endif %}>Newest First</option>
+              <option value="oldest" {% if request.args.get('sort') == 'oldest' %}selected{% endif %}>Oldest First</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    
+
       <div class="row pt-5">
         {% for review in reviews %}
           <div class="col-md-6 col-lg-4 pb-5">
@@ -73,10 +93,14 @@
                 </button>
                 <form action="{{ url_for('main.update_review', review_id=review.review_id) }}" method="GET" class="d-inline-block">
                   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" /> 
-                  <button type="submit" class="btn btn-outline-dark">Edit</button>
+                  <button type="submit" class="btn btn-outline-dark">
+                    <span class="mdi mdi-pencil me-2"></span>
+                    Edit
+                  </button>
                 </form>
                 {% if current_user.is_admin %}
                   <button href="#" data-review-id="{{ review.review_id }}" data-bs-toggle="modal" data-bs-target="#confirm-delete-modal" class="btn btn-outline-danger delete-btn">
+                    <span class="mdi mdi-delete me-2"></span>
                     Delete
                   </button>
                 {% endif %}
@@ -126,7 +150,7 @@
                     <input type="hidden" id="review_id" name="review_id" value="" />
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />              
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="submit" class="btn btn-danger"><span class="mdi mdi-delete me-2 mr-2"></span>Delete</button>
                   </form>
                 </div>
               </div>

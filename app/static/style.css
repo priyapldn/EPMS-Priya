@@ -17,6 +17,33 @@ body {
   color: black;
 }
 
+.button-custom:hover {
+  background-color: rgb(200, 160, 190);
+  color: white;
+}
+
+.form-custom {
+  background-color: rgb(220, 176, 216);
+  border-radius: 5px;
+  box-shadow: none;
+}
+
+.form-custom input,
+.form-custom select,
+.form-custom textarea {
+  background-color: rgb(220, 176, 216);
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  padding: 9px;
+}
+
+.form-custom input:focus,
+.form-custom select:focus,
+.form-custom textarea:focus {
+  border-color: rgb(220, 176, 216);
+}
+
 #flash-message {
   transition: opacity 0.5s ease-out;
 }
