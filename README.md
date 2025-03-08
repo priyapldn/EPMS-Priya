@@ -9,6 +9,8 @@ This application has been built and deployed on Render, with the hosted links as
 - Staging: https://epms-sedo-staging.onrender.com
 - Production: https://epms-sedo-prod.onrender.com
 
+NOTE: Please allow up to 60 seconds to load the webpage, as the server loads (usually takes around 15 seconds but 60 seconds maximum)
+
 To log in as admin, the credentials are at the bottom of this README.
 
 Uptime Robot has been used to keep this site running, and is monitored regularly.
@@ -40,9 +42,9 @@ OR with an SSH Key:
 git clone git@github.com:priyapldn/EPMS-SEA-Priya.git
 ```
 
-### Dependencies
+### Virtual Environment/Dependencies
 
-Next, please ensure you have Python3 and `pip` installed. Ensure you have a python virtual environment setup in the **root** directory. If not, please follow these steps to do so:
+Next, please ensure you have Python3 and `pip` installed. Ensure you have a python virtual environment set up in the **root** directory. If not, please follow these steps to do so:
 
 ```bash
 # Install virtualenv
@@ -51,7 +53,7 @@ pip install virtualenv
 # Create environment
 python3 -m venv .venv
 
-# Activate Environment
+# Activate environment
 source .venv/bin/activate
 ```
 
@@ -94,7 +96,7 @@ class Config:
 To run this locally, you will need to generate the SECRET_KEY. There is a file in the **root** directory called `generate_secret_key.py`. Execute this file by running:
 
 ```bash
-# Ensure you are in the root directory first, otherwise your terminal will not find this file... e.g. cd EPMS-SEA-Priya
+# Ensure you are in the root directory first, otherwise your terminal will not find this file... e.g. cd EPMS-Priya
 python3 generate_secret_key.py
 ```
 
