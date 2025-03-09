@@ -27,6 +27,7 @@ class AuthHandler:
 
     def sanitize_input(self, value):
         """Sanitize input to prevent SQL Injection"""
+        # Regex to check special characters only
         if not re.match(r'^[a-zA-Z0-9_@.]+$', value):
             abort(400, description="Invalid input detected")
         return value
