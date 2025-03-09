@@ -1,9 +1,10 @@
 from datetime import date
-from flask import Flask
+from flask import Flask, request, abort, redirect, url_for
 from flask_login import LoginManager
 from flask_talisman import Talisman
 from flask_wtf import CSRFProtect
 from werkzeug.security import generate_password_hash
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.auth import AuthHandler
 from app.database import add_employee, add_review, get_session, init_engine
@@ -23,8 +24,10 @@ class AppFactory:
         """Set up and return the Flask app"""
         self.app = Flask(__name__)
 
+        # Apply proxy fix if the app is behind a reverse proxy
+        self.app.wsgi_app = ProxyFix(self.app.wsgi_app, x_for=1)
+
         # Call all functions of AppFactory
-        # self._set_security_headers()
         self._configure_app(config)
         self.csrf.init_app(self.app)
         self._init_database()
@@ -35,20 +38,10 @@ class AppFactory:
         # Register app blueprints
         self._register_blueprints()
 
+        # Apply security measures
+        self._apply_security()
+
         return self.app
-    
-    # def _set_security_headers(self):
-    #     """Set security headers including Content Security Policy"""
-    #     Talisman(self.app, content_security_policy={
-    #         'default-src': "'self'",
-    #         'script-src': "'self' 'unsafe-inline' https://trusted.cdn.com",
-    #         'style-src': "'self' 'unsafe-inline' https://trusted.styles.com",
-    #         'img-src': "'self' data:",
-    #         'object-src': "'none'",
-    #         'frame-ancestors': "'none'",
-    #         'base-uri': "'self'",
-    #         'form-action': "'self'"
-    #     })
 
     def _configure_app(self, config):
         """Load configuration"""
@@ -116,6 +109,39 @@ class AppFactory:
         self.app.register_blueprint(main_blueprint)
 
         self.app.register_blueprint(self.auth_handler.auth_bp)
+
+    def _apply_security(self):
+        """Apply security measures like blocking TRACE, TRACK, OPTIONS methods and removing sensitive headers"""
+
+        # Block TRACE, TRACK, and OPTIONS methods
+        @self.app.before_request
+        def block_trace_track_options():
+            if request.method in ["TRACE", "TRACK", "OPTIONS"]:
+                # Method Not Allowed
+                abort(405)
+
+        # Remove sensitive headers like X-Powered-By and Server
+        @self.app.after_request
+        def remove_sensitive_headers(response):
+            response.headers["Server"] = "EPMS_Server"
+            response.headers.pop("X-Powered-By", None)
+            return response
+
+        # Standard error message for 404
+        @self.app.errorhandler(404)
+        def page_not_found(e):
+            return (
+                "404 Not Found: The resource you are looking for could not be found.",
+                404,
+            )
+
+        # Standard error message for 500
+        @self.app.errorhandler(500)
+        def internal_server_error(e):
+            return (
+                "500 Internal Server Error: Something went wrong on our end. Please try again later.",
+                500,
+            )
 
 
 # Targeted on flask run
