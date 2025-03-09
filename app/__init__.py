@@ -1,9 +1,10 @@
 from datetime import date
-from flask import Flask, request, abort
+from flask import Flask, request, abort, redirect, url_for
 from flask_login import LoginManager
 from flask_talisman import Talisman
 from flask_wtf import CSRFProtect
 from werkzeug.security import generate_password_hash
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.auth import AuthHandler
 from app.database import add_employee, add_review, get_session, init_engine
@@ -22,6 +23,9 @@ class AppFactory:
     def create_app(self, config=None):
         """Set up and return the Flask app"""
         self.app = Flask(__name__)
+
+        # Apply proxy fix if the app is behind a reverse proxy
+        self.app.wsgi_app = ProxyFix(self.app.wsgi_app, x_for=1)
 
         # Call all functions of AppFactory
         self._configure_app(config)
@@ -120,7 +124,6 @@ class AppFactory:
         @self.app.after_request
         def remove_sensitive_headers(response):
             response.headers["Server"] = "EPMS_Server"
-            # Remove X-Powered-By header
             response.headers.pop("X-Powered-By", None)
             return response
 
