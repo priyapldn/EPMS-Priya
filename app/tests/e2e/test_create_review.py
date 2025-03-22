@@ -1,17 +1,28 @@
+import tempfile
 import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
 import time
 
 
 @pytest.fixture
 def driver():
-    # Set up the WebDriver
-    driver = webdriver.Chrome()
+    # Create a unique temporary directory for each test session
+    user_data_dir = tempfile.mkdtemp()
+
+    chrome_options = Options()
+    # Ensure unique user-data-dir
+    chrome_options.add_argument(f"user-data-dir={user_data_dir}") 
+    chrome_options.add_argument("--headless")
+
+    # Create a new WebDriver instance with the unique user data directory
+    driver = webdriver.Chrome(options=chrome_options)
+
     yield driver
     driver.quit()
 
