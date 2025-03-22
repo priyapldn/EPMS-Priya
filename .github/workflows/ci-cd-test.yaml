@@ -13,25 +13,30 @@ permissions:
 jobs:
   test:
     name: Run Tests & Linting
+    # The job will run on an Ubuntu environment
     runs-on: ubuntu-latest
 
     strategy:
+      # Test across Python 3.9 and 3.10
       matrix:
         python-version: ["3.9", "3.10"]
-    
+
     env:
-      SECRET_KEY: ${{ secrets.SECRET_KEY }} 
+      # Inject SECRET_KEY from GitHub secrets
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Python
+        # Set up the Python version specified in the matrix
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Cache Dependencies
+        # Cache Python dependencies to speed up future runs
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
@@ -40,31 +45,38 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install Dependencies
+        # Install additional dependencies if requirements.txt exists
         run: |
           python -m pip install --upgrade pip
           pip install flake8 pytest pytest-cov
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Lint with Flake8
+        # Run Flake8 for critical linting errors, with custom complexity and line length rules
         run: |
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
       - name: Start Flask App
+        # Start the Flask app in the background
         run: |
           nohup flask run --host=0.0.0.0 --port=5000 &
 
       - name: Wait for Flask server to be ready
+        # Retry for up to 30 attempts and check if Flask server is ready
         run: |
           for i in {1..30}; do
             curl -s http://127.0.0.1:5000/ && break || sleep 2;
           done
 
       - name: Run Unit Tests with Coverage
+        # Run tests with coverage and generate a coverage report
         run: |
           pytest --cov=app --cov-report=xml
 
       - name: Upload Coverage Report
+        # Upload coverage report to Codecov
         uses: codecov/codecov-action@v3
         with:
+          # Use the Codecov token from secrets
           token: ${{ secrets.CODECOV_TOKEN }}
