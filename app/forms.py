@@ -23,7 +23,8 @@ from app.models import Employee
 
 
 class LoginForm(FlaskForm):
-    """Login validation form"""
+    """Form to validate user login credentials"""
+
     username = StringField("Username", validators=[DataRequired(), Length(min=10)])
     password = PasswordField("Password", validators=[DataRequired(), Length(min=8)])
     remember = BooleanField("Remember Me")
@@ -31,7 +32,9 @@ class LoginForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
-    """Registration validation form"""
+    """Form to validate user registration data"""
+
+    # Name field with regex to ensure it contains only letters, spaces, or hyphens
     name = StringField(
         "Name",
         validators=[
@@ -39,18 +42,23 @@ class RegistrationForm(FlaskForm):
             Regexp(r"^[a-zA-Z\s\-]+$", message="Name must contain only letters."),
         ],
     )
+    # Employee number field must be an integer
     employee_number = IntegerField("Employee Number", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])
+    # Username field with a minimum length of 10 characters
     username = StringField("Username", validators=[DataRequired(), Length(min=10)])
+    # Password field with no predefined validators, will be validated separately
     password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("Sign Up")
 
     def __init__(self, session=None, *args, **kwargs):
+        """Initialize form with optional session parameter for database access"""
         super().__init__(*args, **kwargs)
         self.session = get_session()
 
     def validate_username(self, username):
-        """Validate that the username is not already taken."""
+        """Custom validator to check if the username already exists"""
+        # Query the database to check if the username already exists
         employee_exists = (
             self.session.query(Employee).filter_by(username=username.data).first()
         )
@@ -60,7 +68,7 @@ class RegistrationForm(FlaskForm):
             )
 
     def validate_password(self, password):
-        """Validate the password to ensure it meets complexity requirements."""
+        """Custom validator to ensure password meets complexity requirements"""
         if len(password.data) < 8:
             raise ValidationError("Password must be at least 8 characters long.")
 
@@ -80,10 +88,12 @@ class RegistrationForm(FlaskForm):
             )
 
     def validate_email(self, email):
-        """Validate that the email is not already associated with an existing account."""
+        """Custom validator to check if the email is already associated with an existing account"""
+        # Query the database to check if the email already exists
         employee_exists = (
             self.session.query(Employee).filter_by(email=email.data).first()
         )
+        # Raise a validation error if the email is already in use
         if employee_exists:
             raise ValidationError(
                 "There is already an account with this email. Please login."
@@ -91,8 +101,11 @@ class RegistrationForm(FlaskForm):
 
 
 class CreateReviewForm(FlaskForm):
-    """Create Review validation form"""
+    """Form to validate review creation data"""
+
+    # Review date field, required to enter a date
     review_date = DateField("Date", validators=[DataRequired()])
+    # Reviewer ID field, must be a positive integer
     reviewer_id = IntegerField(
         "Reviewer ID",
         validators=[
@@ -100,9 +113,11 @@ class CreateReviewForm(FlaskForm):
             NumberRange(min=1, message="Reviewer ID must be a positive integer"),
         ],
     )
+    # Dropdown to select the overall performance rating
     overall_performance_rating = SelectField(
         "Overall Performance Rating",
         choices=[
+            # Default placeholder
             ("", "Select Value"),
             ("Excellent", "Excellent"),
             ("Good", "Good"),
@@ -112,6 +127,7 @@ class CreateReviewForm(FlaskForm):
         ],
         validators=[DataRequired()],
     )
+    # Goals field, required and with a minimum length of 10 characters
     goals = TextAreaField("Goals", validators=[DataRequired(), Length(min=10)])
     reviewer_comments = TextAreaField(
         "Reviewer Comments",
