@@ -9,7 +9,7 @@ from selenium.webdriver.chrome.options import Options
 
 @pytest.fixture
 def driver():
-    # Create a unique temporary directory for each test session
+    """Create a unique temporary directory for each test session"""
     user_data_dir = tempfile.mkdtemp()
 
     chrome_options = Options()
@@ -23,8 +23,8 @@ def driver():
     yield driver
     driver.quit()
     
-# Test for authenticated user with admin privileges
 def test_authenticated_admin(driver):
+    """Test for authenticated user with admin privileges"""
     # Login as an admin user
     driver.get("http://127.0.0.1:5000/login")
 
@@ -51,8 +51,9 @@ def test_authenticated_admin(driver):
     view_reviews_button = driver.find_element(By.XPATH, "//a[contains(text(), 'View All Reviews')]")
     assert view_reviews_button.is_displayed()
 
-# Test for authenticated user with regular privileges
+
 def test_authenticated_user(driver):
+    """Test for authenticated user with regular privileges"""
     # Login as a regular user
     driver.get("http://127.0.0.1:5000/login")
 
@@ -82,8 +83,8 @@ def test_authenticated_user(driver):
     except:
         pass
 
-# Test for unauthenticated user
 def test_unauthenticated_user(driver):
+    """Test for unauthenticated user"""
     # Visit the home page without logging in
     driver.get("http://127.0.0.1:5000/home")
 

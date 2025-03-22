@@ -12,7 +12,7 @@ import time
 
 @pytest.fixture
 def driver():
-    # Create a unique temporary directory for each test session
+    """Create a unique temporary directory for each test session"""
     user_data_dir = tempfile.mkdtemp()
 
     chrome_options = Options()
@@ -28,7 +28,7 @@ def driver():
 
 
 def test_submit_review(driver):
-    # Visit the login page
+    """Submittig a review"""
     driver.get("http://127.0.0.1:5000/login")
 
     username_input = driver.find_element(By.NAME, "username")
