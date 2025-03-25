@@ -1,143 +1,133 @@
-# import tempfile
-# import pytest
-# from selenium import webdriver
-# from selenium.webdriver.common.by import By
-# from selenium.webdriver.common.keys import Keys
-# from selenium.webdriver.support.ui import WebDriverWait
-# from selenium.webdriver.support import expected_conditions as EC
-# from selenium.webdriver.chrome.options import Options
+import tempfile
+import pytest
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 
-# @pytest.fixture
-# def driver():
-#     """Create a unique temporary directory for each test session"""
-#     user_data_dir = tempfile.mkdtemp()
+@pytest.fixture
+def driver():
+    """Create a unique temporary directory for each test session."""
+    user_data_dir = tempfile.mkdtemp()
 
-#     chrome_options = Options()
-#     # Ensure unique user-data-dir
-#     chrome_options.add_argument(f"user-data-dir={user_data_dir}") 
-#     chrome_options.add_argument("--headless")
+    chrome_options = Options()
+    chrome_options.add_argument(f"user-data-dir={user_data_dir}")
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox")
 
-#     # Create a new WebDriver instance with the unique user data directory
-#     driver = webdriver.Chrome(options=chrome_options)
+    driver = webdriver.Chrome(options=chrome_options)
 
-#     yield driver
-#     driver.quit()
+    yield driver
+    driver.quit()
 
-# def test_authenticated_admin(driver):
-#     """Login as an admin and verify access."""
-#     driver.get("http://127.0.0.1:5000/login")
 
-#     # Enter admin credentials
-#     username_input = driver.find_element(By.NAME, "username")
-#     password_input = driver.find_element(By.NAME, "password")
+def test_authenticated_admin(driver):
+    """Login as an admin and verify access."""
+    driver.get("http://127.0.0.1:5000/login")
 
-#     username_input.send_keys("johndoe1234")
-#     password_input.send_keys("Password123!")
-#     password_input.send_keys(Keys.RETURN)
+    # Enter admin credentials
+    driver.find_element(By.NAME, "username").send_keys("johndoe1234")
+    driver.find_element(By.NAME, "password").send_keys("Password123!")
+    driver.find_element(By.NAME, "password").send_keys(Keys.RETURN)
 
-#     # Wait until the admin page loads
-#     WebDriverWait(driver, 10).until(
-#         EC.presence_of_element_located((By.XPATH, "//h4[contains(text(), 'Welcome')]"))
-#     )
+    # Wait until the admin page loads
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//h4[contains(text(), 'Welcome')]"))
+    )
 
-#     # Validate admin sees their info
-#     welcome_text = driver.find_element(By.XPATH, "//h4[contains(text(), 'Welcome')]").text
-#     admin_privileges = driver.find_element(By.XPATH, "//h6[contains(text(), 'You have admin privileges')]").text
+    # Validate admin info
+    assert "Welcome, John Doe" in driver.page_source
+    assert "You have admin privileges" in driver.page_source
 
-#     assert "Welcome, John Doe" in welcome_text
-#     assert "You have admin privileges" in admin_privileges
+    # Ensure admin buttons are visible
+    try:
+        view_reviews_button = driver.find_element(By.XPATH, "//a[contains(text(), 'View All Reviews')]")
+        assert view_reviews_button.is_displayed()
+    except NoSuchElementException:
+        pytest.fail("Admin button not found")
 
-#     # Ensure admin buttons are visible
-#     view_reviews_button = driver.find_element(By.XPATH, "//a[contains(text(), 'View All Reviews')]")
-#     assert view_reviews_button.is_displayed()
 
-# def test_authenticated_user(driver):
-#     """Login as a regular user and verify access."""
-#     driver.get("http://127.0.0.1:5000/login")
+def test_authenticated_user(driver):
+    """Login as a regular user and verify access."""
+    driver.get("http://127.0.0.1:5000/login")
 
-#     # Enter regular user credentials
-#     username_input = driver.find_element(By.NAME, "username")
-#     password_input = driver.find_element(By.NAME, "password")
+    # Enter regular user credentials
+    driver.find_element(By.NAME, "username").send_keys("lucyhayes006")
+    driver.find_element(By.NAME, "password").send_keys("Password123!")
+    driver.find_element(By.NAME, "password").send_keys(Keys.RETURN)
 
-#     username_input.send_keys("lucyhayes006")
-#     password_input.send_keys("Password123!")
-#     password_input.send_keys(Keys.RETURN)
+    # Wait until the user page loads
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//h4[contains(text(), 'Welcome')]"))
+    )
 
-#     # Wait until the user page loads
-#     WebDriverWait(driver, 10).until(
-#         EC.presence_of_element_located((By.XPATH, "//h4[contains(text(), 'Welcome')]"))
-#     )
+    # Validate regular user info
+    assert "Welcome, Lucy H" in driver.page_source
+    assert "You have regular user privileges" in driver.page_source
 
-#     # Validate regular user info
-#     welcome_text = driver.find_element(By.XPATH, "//h4[contains(text(), 'Welcome')]").text
-#     regular_privileges = driver.find_element(By.XPATH, "//h6[contains(text(), 'You have regular user privileges')]").text
+    # Ensure regular user cannot see admin buttons
+    with pytest.raises(NoSuchElementException):
+        driver.find_element(By.XPATH, "//a[contains(text(), 'View All Reviews')]")
 
-#     assert "Welcome, Lucy H" in welcome_text
-#     assert "You have regular user privileges" in regular_privileges
 
-#     # Ensure regular user cannot see admin buttons
-#     try:
-#         driver.find_element(By.XPATH, "//a[contains(text(), 'View All Reviews')]")
-#         assert False, "Admin button should not be visible to regular users"
-#     except:
-#         pass
+def test_unauthenticated_user(driver):
+    """Access a protected route without logging in."""
+    driver.get("http://127.0.0.1:5000/home")
 
-# def test_unauthenticated_user(driver):
-#     """Access a protected route without logging in."""
-#     driver.get("http://127.0.0.1:5000/home")
+    # Wait for the flash message
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "flash-message"))
+    )
 
-#     # Wait for the flash message
-#     WebDriverWait(driver, 10).until(
-#         EC.presence_of_element_located((By.ID, "flash-message"))
-#     )
+    # Verify the warning message is displayed
+    warning_message = driver.find_element(By.ID, "flash-message").text
+    assert "Please log in to access this page" in warning_message
 
-#     # Verify the warning message is displayed
-#     warning_message = driver.find_element(By.ID, "flash-message").text
-#     assert "Please log in to access this page" in warning_message
 
-# def test_invalid_login(driver):
-#     """Test login with invalid credentials."""
-#     driver.get("http://127.0.0.1:5000/login")
+def test_invalid_login(driver):
+    """Test login with invalid credentials."""
+    driver.get("http://127.0.0.1:5000/login")
 
-#     # Enter incorrect credentials
-#     username_input = driver.find_element(By.NAME, "username")
-#     password_input = driver.find_element(By.NAME, "password")
+    # Enter incorrect credentials
+    driver.find_element(By.NAME, "username").send_keys("wronguser12")
+    driver.find_element(By.NAME, "password").send_keys("wrongpassword")
+    driver.find_element(By.NAME, "password").send_keys(Keys.RETURN)
 
-#     username_input.send_keys("wronguser")
-#     password_input.send_keys("wrongpassword")
-#     password_input.send_keys(Keys.RETURN)
+    # Increase wait time to ensure flash message appears
+    WebDriverWait(driver, 20).until(
+        EC.visibility_of_element_located((By.XPATH, "//div[contains(@class, 'alert')]"))
+    )
 
-#     WebDriverWait(driver, 20).until(
-#     EC.visibility_of_element_located((By.XPATH, "//div[@class='alert']"))
-#     )
+    # Verify flash message
+    flash_message = driver.find_element(By.XPATH, "//div[contains(@class, 'alert')]").text
+    assert "Invalid username or password. Please try again" in flash_message
 
-#     # Verify flash message is displayed
-#     flash_message = driver.find_element(By.XPATH, "//div[@class='alert']").text
-#     assert "Invalid username or password. Please try again" in flash_message
 
 # def test_csrf_protection(driver):
 #     """Test that CSRF protection is enforced."""
 #     driver.get("http://127.0.0.1:5000/login")
 
-#     # Attempt login without CSRF token (manipulate request)
+#     # Remove CSRF token with JavaScript
 #     driver.execute_script("""
-#         document.querySelector('input[name="csrf_token"]').remove();
+#         let csrf = document.querySelector('input[name="csrf_token"]');
+#         if (csrf) csrf.remove();
 #     """)
 
 #     # Submit the form without CSRF token
-#     username_input = driver.find_element(By.NAME, "username")
-#     password_input = driver.find_element(By.NAME, "password")
+#     driver.find_element(By.NAME, "username").send_keys("johndoe1234")
+#     driver.find_element(By.NAME, "password").send_keys("Password123!")
+#     driver.find_element(By.NAME, "password").send_keys(Keys.RETURN)
 
-#     username_input.send_keys("johndoe1234")
-#     password_input.send_keys("Password123!")
-#     password_input.send_keys(Keys.RETURN)
-
-#     # Wait for flash message
-#     WebDriverWait(driver, 10).until(
-#         EC.presence_of_element_located((By.ID, "flash-message"))
+#     # Increase wait time to ensure flash message appears
+#     WebDriverWait(driver, 20).until(
+#         EC.visibility_of_element_located((By.XPATH, "//div[contains(@class, 'alert')]"))
 #     )
 
 #     # Verify CSRF failure message
-#     flash_message = driver.find_element(By.ID, "flash-message").text
+#     flash_message = driver.find_element(By.XPATH, "//div[contains(@class, 'alert')]").text
 #     assert "CSRF token is missing or invalid" in flash_message
